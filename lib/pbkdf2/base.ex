@@ -5,11 +5,16 @@ defmodule Pbkdf2.Base do
   use Bitwise
   alias Pbkdf2.{Base64, Tools}
 
+  @max_length bsl(1, 32) - 1
+
   @doc """
   """
   def hash_password(password, salt, opts \\ [])
   def hash_password(password, salt, opts) when is_binary(password) and is_binary(salt) do
     {rounds, output_fmt, {digest, length}} = get_opts(opts)
+    if length > @max_length do
+      raise ArgumentError, "length must be equal to or less than #{@max_length}"
+    end
     pbkdf2(password, salt, rounds, digest, length) |> format(salt, rounds, output_fmt)
   end
   def hash_password(_, _, _) do
@@ -24,33 +29,35 @@ defmodule Pbkdf2.Base do
     |> Tools.secure_check(hash)
   end
 
-  defp pbkdf2(password, salt, rounds, digest, length) when byte_size(salt) in 16..1024 do
+  @doc """
+  """
+  def pbkdf2(password, salt, rounds, digest, length) when byte_size(salt) < 1024 do
     pbkdf2(password, salt, rounds, digest, length, 1, [], 0)
   end
-  defp pbkdf2(_password, _salt, _rounds, _digest, _length) do
-    raise ArgumentError, "The salt is the wrong length."
+  def pbkdf2(_password, _salt, _rounds, _digest, _length) do
+    raise ArgumentError, "The salt is the wrong length"
   end
 
   defp get_opts(opts) do
     {Keyword.get(opts, :rounds, 160_000),
     Keyword.get(opts, :format, :modular),
     case opts[:digest] do
-      :sha256 -> {:sha256, 32}
-      _ -> {:sha512, 64}
+      :sha256 -> {:sha256, opts[:length] || 32}
+      _ -> {:sha512, opts[:length] || 64}
     end}
   end
 
-  defp pbkdf2(_password, _salt, _rounds, _digest, max_length, _block_index, acc, length)
-      when length >= max_length do
+  defp pbkdf2(_password, _salt, _rounds, _digest, dklen, _block_index, acc, length)
+      when length >= dklen do
     key = acc |> Enum.reverse |> IO.iodata_to_binary
-    <<bin::binary-size(max_length), _::binary>> = key
+    <<bin::binary-size(dklen), _::binary>> = key
     bin
   end
-  defp pbkdf2(password, salt, rounds, digest, max_length, block_index, acc, length) do
+  defp pbkdf2(password, salt, rounds, digest, dklen, block_index, acc, length) do
     initial = :crypto.hmac(digest, password, <<salt::binary, block_index::integer-size(32)>>)
     block = iterate(password, rounds - 1, digest, initial, initial)
-    pbkdf2(digest, password, salt, rounds, max_length, block_index + 1,
-    [block | acc], byte_size(block) + length)
+    pbkdf2(password, salt, rounds, digest, dklen, block_index + 1,
+      [block | acc], byte_size(block) + length)
   end
 
   defp iterate(_password, 0, _digest, _prev, acc), do: acc
@@ -62,7 +69,7 @@ defmodule Pbkdf2.Base do
   defp format(hash, salt, rounds, :modular) do
     "$pbkdf2-sha512$#{rounds}$#{Base64.encode(salt)}$#{Base64.encode(hash)}"
   end
-  defp format(hash, _salt, _rounds, :hex), do: Base.encode64(hash)
+  defp format(hash, _salt, _rounds, :hex), do: Base.encode16(hash, case: :lower)
 
   defp verify_format(hash, :modular) do
     Base64.encode(hash)

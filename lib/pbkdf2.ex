@@ -2,7 +2,7 @@ defmodule Pbkdf2 do
   @moduledoc """
   """
 
-  use Bitwise
+  #use Bitwise
   import Pbkdf2.Base
 
   @doc """
@@ -12,7 +12,7 @@ defmodule Pbkdf2 do
     :crypto.strong_rand_bytes(salt_len)
   end
   def gen_salt(_) do
-    raise ArgumentError, "The salt is the wrong length."
+    raise ArgumentError, "The salt is the wrong length"
   end
 
   @doc """

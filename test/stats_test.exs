@@ -1,4 +1,4 @@
-defmodule Pbkdf2StatsTest do
+defmodule Pbkdf2.StatsTest do
   use ExUnit.Case
 
   import ExUnit.CaptureIO
