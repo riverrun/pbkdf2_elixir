@@ -62,10 +62,4 @@ defmodule Pbkdf2.BaseTest do
     |> check_vectors
   end
 
-  test "wrong input to hash_password" do
-    assert_raise ArgumentError, "Wrong type - password and salt should be strings", fn ->
-      Base.hash_password("password", 'dontusecharlists')
-    end
-  end
-
 end

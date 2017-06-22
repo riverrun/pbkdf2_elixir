@@ -9,33 +9,27 @@ defmodule Pbkdf2.Base do
 
   @doc """
   """
-  def hash_password(password, salt, opts \\ [])
-  def hash_password(password, salt, opts) when is_binary(password) and is_binary(salt) do
+  def hash_password(password, salt, opts \\ []) do
     {rounds, output_fmt, {digest, length}} = get_opts(opts)
     if length > @max_length do
       raise ArgumentError, "length must be equal to or less than #{@max_length}"
     end
-    pbkdf2(password, salt, rounds, digest, length) |> format(salt, rounds, output_fmt)
-  end
-  def hash_password(_, _, _) do
-    raise ArgumentError, "Wrong type - password and salt should be strings"
+    pbkdf2(password, salt, rounds, digest, length, 1, [], 0)
+    |> format(salt, rounds, output_fmt)
   end
 
   @doc """
   """
   def verify_hash(hash, password, salt, rounds, digest, length, output_fmt) do
-    pbkdf2(password, Base64.decode(salt), String.to_integer(rounds), digest, length)
+    pbkdf2(password, Base64.decode(salt), String.to_integer(rounds), digest, length, 1, [], 0)
     |> verify_format(output_fmt)
     |> Tools.secure_check(hash)
   end
 
   @doc """
   """
-  def pbkdf2(password, salt, rounds, digest, length) when byte_size(salt) < 1024 do
+  def pbkdf2(password, salt, rounds, digest, length) do
     pbkdf2(password, salt, rounds, digest, length, 1, [], 0)
-  end
-  def pbkdf2(_password, _salt, _rounds, _digest, _length) do
-    raise ArgumentError, "The salt is the wrong length"
   end
 
   defp get_opts(opts) do
@@ -69,7 +63,7 @@ defmodule Pbkdf2.Base do
   defp format(hash, salt, rounds, :modular) do
     "$pbkdf2-sha512$#{rounds}$#{Base64.encode(salt)}$#{Base64.encode(hash)}"
   end
-  defp format(hash, _salt, _rounds, :hex), do: Base.encode16(hash, case: :lower)
+  defp format(hash, _salt, _rounds, :hex), do: Base.encode16(hash)
 
   defp verify_format(hash, :modular) do
     Base64.encode(hash)
