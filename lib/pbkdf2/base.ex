@@ -9,13 +9,19 @@ defmodule Pbkdf2.Base do
 
   @doc """
   """
-  def hash_password(password, salt, opts \\ []) do
+  def hash_password(password, salt, opts \\ [])
+  def hash_password(password, salt, opts)
+      when is_binary(password) and is_binary(salt) and byte_size(salt) > 7 do
     {rounds, output_fmt, {digest, length}} = get_opts(opts)
     if length > @max_length do
       raise ArgumentError, "length must be equal to or less than #{@max_length}"
     end
     pbkdf2(password, salt, rounds, digest, length, 1, [], 0)
-    |> format(salt, rounds, output_fmt)
+    |> format(salt, digest, rounds, output_fmt)
+  end
+  def hash_password() do
+    raise ArgumentError, "The password and salt should be strings and " <>
+      "the salt must be at least 8 bytes long"
   end
 
   @doc """
@@ -24,12 +30,6 @@ defmodule Pbkdf2.Base do
     pbkdf2(password, Base64.decode(salt), String.to_integer(rounds), digest, length, 1, [], 0)
     |> verify_format(output_fmt)
     |> Tools.secure_check(hash)
-  end
-
-  @doc """
-  """
-  def pbkdf2(password, salt, rounds, digest, length) do
-    pbkdf2(password, salt, rounds, digest, length, 1, [], 0)
   end
 
   defp get_opts(opts) do
@@ -60,10 +60,10 @@ defmodule Pbkdf2.Base do
     iterate(password, round - 1, digest, next, :crypto.exor(next, acc))
   end
 
-  defp format(hash, salt, rounds, :modular) do
-    "$pbkdf2-sha512$#{rounds}$#{Base64.encode(salt)}$#{Base64.encode(hash)}"
+  defp format(hash, salt, digest, rounds, :modular) do
+    "$pbkdf2-#{digest}$#{rounds}$#{Base64.encode(salt)}$#{Base64.encode(hash)}"
   end
-  defp format(hash, _salt, _rounds, :hex), do: Base.encode16(hash)
+  defp format(hash, _salt, _digest, _rounds, :hex), do: Base.encode16(hash, case: :lower)
 
   defp verify_format(hash, :modular) do
     Base64.encode(hash)

@@ -39,19 +39,7 @@ defmodule Pbkdf2Test do
     assert byte_size(Pbkdf2.gen_salt(64)) == 64
   end
 
-  test "wrong input to gen_salt" do
-    assert_raise ArgumentError, "The salt is the wrong length", fn ->
-      Pbkdf2.gen_salt(15)
-    end
-    assert_raise ArgumentError, "The salt is the wrong length", fn ->
-      Pbkdf2.gen_salt(1025)
-    end
-  end
-
   test "wrong input to verify_hash" do
-    assert_raise ArgumentError, "Wrong type - password and salt should be strings", fn ->
-      Pbkdf2.verify_hash('$pbkdf2-sha512$19000$JMT4nzOmVKrV.p/TmlMKwQ$jKbZHoPwUWBT08pjb/CnUZmFcB9JW4dsOzVkfi9X6Pdn5NXWeY.mhL1Bm4V9rjYL5ZfA32uh7Gl2gt5YQa/JCA', "password")
-    end
     assert_raise ArgumentError, "Wrong type - password and salt should be strings", fn ->
       Pbkdf2.verify_hash("$pbkdf2-sha512$19000$JMT4nzOmVKrV.p/TmlMKwQ$jKbZHoPwUWBT08pjb/CnUZmFcB9JW4dsOzVkfi9X6Pdn5NXWeY.mhL1Bm4V9rjYL5ZfA32uh7Gl2gt5YQa/JCA", nil)
     end

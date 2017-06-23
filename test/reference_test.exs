@@ -18,9 +18,6 @@ defmodule Pbkdf2.ReferenceTest do
 
   test "sha256 reference tests" do
     read_file("pbkdf2_sha256_test_vectors", :sha256)
-    #pass\0word,sa\0lt,4096,16,89b69d0516f829893c696226650a8687
-    assert Base.hash_password("pass\0word", "sa\0lt", rounds: 4096, digest: :sha256,
-                              length: 16, format: :hex) == "89B69D0516F829893C696226650A8687"
   end
 
   test "sha512 reference tests" do
