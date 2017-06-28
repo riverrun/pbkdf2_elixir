@@ -1,5 +1,6 @@
 defmodule Pbkdf2.Base do
   @moduledoc """
+  Base module for the Pbkdf2 password hashing library.
   """
 
   use Bitwise
@@ -8,6 +9,7 @@ defmodule Pbkdf2.Base do
   @max_length bsl(1, 32) - 1
 
   @doc """
+  Hash a password using Pbkdf2.
   """
   def hash_password(password, salt, opts \\ [])
   def hash_password(password, salt, opts)
@@ -25,6 +27,7 @@ defmodule Pbkdf2.Base do
   end
 
   @doc """
+  Verify an encoded Pbkdf2 hash.
   """
   def verify_hash(hash, password, salt, rounds, digest, length, output_fmt) do
     pbkdf2(password, Base64.decode(salt), String.to_integer(rounds), digest, length, 1, [], 0)
