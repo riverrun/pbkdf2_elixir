@@ -21,7 +21,7 @@ defmodule Pbkdf2.Base do
     pbkdf2(password, salt, rounds, digest, length, 1, [], 0)
     |> format(salt, digest, rounds, output_fmt)
   end
-  def hash_password() do
+  def hash_password(_, _, _) do
     raise ArgumentError, "The password and salt should be strings and " <>
       "the salt must be at least 8 bytes long"
   end

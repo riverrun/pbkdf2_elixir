@@ -81,4 +81,13 @@ defmodule Pbkdf2.BaseTest do
     ] |> check_vectors(:sha256)
   end
 
+  test "wrong input to hash_password" do
+    assert_raise ArgumentError, "The password and salt should be strings and the salt must be at least 8 bytes long", fn ->
+      Base.hash_password("password", nil)
+    end
+    assert_raise ArgumentError, "The password and salt should be strings and the salt must be at least 8 bytes long", fn ->
+      Base.hash_password("password", "salt")
+    end
+  end
+
 end
