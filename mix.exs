@@ -4,9 +4,12 @@ defmodule Pbkdf2Elixir.Mixfile do
   def project do
     [
       app: :pbkdf2_elixir,
-      version: "0.8.0",
+      version: @version,
       elixir: "~> 1.4",
       start_permanent: Mix.env == :prod,
+      description: @description,
+      package: package(),
+      source_url: "https://github.com/riverrun/pbkdf2_elixir",
       deps: deps()
     ]
   end
@@ -19,8 +22,17 @@ defmodule Pbkdf2Elixir.Mixfile do
 
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+      {:earmark, "~> 1.2", only: :dev},
+      {:ex_doc,  "~> 0.16", only: :dev}
+    ]
+  end
+
+  defp package do
+    [
+      maintainers: ["David Whitlock"],
+      licenses: ["Apache 2.0"],
+      links: %{"GitHub" => "https://github.com/riverrun/pbkdf2_elixir",
+        "Docs" => "http://hexdocs.pm/pbkdf2_elixir"}
     ]
   end
 end

@@ -8,11 +8,13 @@ defmodule Pbkdf2.Stats do
   @doc """
   Hash a password with Pbkdf2 and print out a report.
 
-  This function hashes the password and salt with Pbkdf2.Base.hash_password/3
+  This function hashes a password, and salt, with Pbkdf2.Base.hash_password/3
   and prints out statistics which can help you choose how many rounds to use
   with Pbkdf2.
   """
-  def report(password, salt, opts \\ []) do
+  def report(opts \\ []) do
+    password = Keyword.get(opts, :password, "password")
+    salt = Keyword.get(opts, :salt, "somesaltSOMESALT")
     {exec_time, encoded} = :timer.tc(Pbkdf2.Base, :hash_password, [password, salt, opts])
     Pbkdf2.verify_hash(encoded, password)
     |> format_result(encoded, exec_time)
@@ -23,6 +25,7 @@ defmodule Pbkdf2.Stats do
     IO.puts """
     Digest: #{alg}
     Digest length: #{Base64.decode(hash) |> byte_size}
+    Hash: #{hash}
     Rounds: #{rounds}
     #{format_time(exec_time)} seconds
     Verification #{if check, do: "ok", else: "failed"}
