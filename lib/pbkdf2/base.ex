@@ -10,6 +10,21 @@ defmodule Pbkdf2.Base do
 
   @doc """
   Hash a password using Pbkdf2.
+
+  ## Options
+
+  There are four options:
+
+    * rounds - the number of rounds
+      * increasing this will make the hash function take longer and therefore make it more difficult to attack
+      * the default is 160_000
+    * output_fmt - the output format of the hash
+      * the default is modular crypt format
+    * digest - the sha algorithm that pbkdf2 will use
+      * the default is sha512
+    * length - the length, in bytes, of the hash
+      * the default is 64 for sha512 and 32 for sha256
+
   """
   def hash_password(password, salt, opts \\ [])
   def hash_password(password, salt, opts)
@@ -68,7 +83,7 @@ defmodule Pbkdf2.Base do
   end
   defp format(hash, _salt, _digest, _rounds, :hex), do: Base.encode16(hash, case: :lower)
 
-  defp verify_format(hash, :modular) do
+  defp verify_format(hash, _) do
     Base64.encode(hash)
   end
 end

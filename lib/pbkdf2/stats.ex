@@ -1,6 +1,12 @@
 defmodule Pbkdf2.Stats do
   @moduledoc """
   Module to provide statistics for the Pbkdf2 password hashing function.
+
+  ## Configuring Pbkdf2
+
+  The main configuration option for Pbkdf2 is the number of rounds that
+  it uses. Increasing this value will increase the complexity, and time
+  taken, of the Pbkdf2 function.
   """
 
   alias Pbkdf2.Base64
@@ -9,8 +15,15 @@ defmodule Pbkdf2.Stats do
   Hash a password with Pbkdf2 and print out a report.
 
   This function hashes a password, and salt, with Pbkdf2.Base.hash_password/3
-  and prints out statistics which can help you choose how many rounds to use
-  with Pbkdf2.
+  and prints out statistics which can help you choose how to configure Pbkdf2.
+
+  ## Options
+
+  In addition to the options for Pbkdf2.Base.hash_password (rounds, output_fmt,
+  digest and length), there are two options:
+
+    * password - the password used
+    * salt - the salt used
   """
   def report(opts \\ []) do
     password = Keyword.get(opts, :password, "password")
@@ -25,7 +38,7 @@ defmodule Pbkdf2.Stats do
     IO.puts """
     Digest: #{alg}
     Digest length: #{Base64.decode(hash) |> byte_size}
-    Hash: #{hash}
+    Hash: #{encoded}
     Rounds: #{rounds}
     #{format_time(exec_time)} seconds
     Verification #{if check, do: "ok", else: "failed"}

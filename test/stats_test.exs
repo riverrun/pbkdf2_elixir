@@ -8,6 +8,7 @@ defmodule Pbkdf2.StatsTest do
     report = capture_io(fn -> Stats.report() end)
     assert report =~ "Digest: pbkdf2-sha512\n"
     assert report =~ "Digest length: 64\n"
+    assert report =~ "Hash: $pbkdf2-sha512$160000$"
     assert report =~ "Rounds: 160000\n"
     assert report =~ "Verification ok"
   end
@@ -16,6 +17,7 @@ defmodule Pbkdf2.StatsTest do
     report = capture_io(fn -> Stats.report([digest: :sha256]) end)
     assert report =~ "Digest: pbkdf2-sha256\n"
     assert report =~ "Digest length: 32\n"
+    assert report =~ "Hash: $pbkdf2-sha256$160000$"
     assert report =~ "Rounds: 160000\n"
     assert report =~ "Verification ok"
   end
@@ -24,6 +26,7 @@ defmodule Pbkdf2.StatsTest do
     report = capture_io(fn -> Stats.report([rounds: 300_000]) end)
     assert report =~ "Digest: pbkdf2-sha512\n"
     assert report =~ "Digest length: 64\n"
+    assert report =~ "Hash: $pbkdf2-sha512$300000$"
     assert report =~ "Rounds: 300000\n"
     assert report =~ "Verification ok"
   end
