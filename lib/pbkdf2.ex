@@ -79,8 +79,8 @@ defmodule Pbkdf2 do
   in order to make it more difficult for an attacker to identify users
   by timing responses.
   """
-  def no_user_verify do
-    hash_pwd_salt("password")
+  def no_user_verify(opts \\ []) do
+    hash_pwd_salt("password", opts)
     false
   end
 end
