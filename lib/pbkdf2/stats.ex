@@ -36,11 +36,11 @@ defmodule Pbkdf2.Stats do
   defp format_result(check, encoded, exec_time) do
     [_, alg, rounds, _, hash] = String.split(encoded, "$")
     IO.puts """
-    Digest: #{alg}
-    Digest length: #{Base64.decode(hash) |> byte_size}
-    Hash: #{encoded}
-    Rounds: #{rounds}
-    #{format_time(exec_time)} seconds
+    Digest:\t\t#{alg}
+    Digest length:\t#{Base64.decode(hash) |> byte_size}
+    Hash:\t\t#{encoded}
+    Rounds:\t\t#{rounds}
+    Time taken:\t#{format_time(exec_time)} seconds
     Verification #{if check, do: "ok", else: "failed"}
     """
   end
