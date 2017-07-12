@@ -3,10 +3,10 @@ defmodule Pbkdf2Test do
 
   def hash_check_password(password, wrong1, wrong2, wrong3) do
     hash = Pbkdf2.hash_pwd_salt(password)
-    assert Pbkdf2.verify_hash(hash, password) == true
-    assert Pbkdf2.verify_hash(hash, wrong1) == false
-    assert Pbkdf2.verify_hash(hash, wrong2) == false
-    assert Pbkdf2.verify_hash(hash, wrong3) == false
+    assert Pbkdf2.verify_pass(password, hash) == true
+    assert Pbkdf2.verify_pass(wrong1, hash) == false
+    assert Pbkdf2.verify_pass(wrong2, hash) == false
+    assert Pbkdf2.verify_pass(wrong3, hash) == false
   end
 
   test "pbkdf2 dummy check" do
@@ -39,9 +39,9 @@ defmodule Pbkdf2Test do
     assert byte_size(Pbkdf2.gen_salt(64)) == 64
   end
 
-  test "wrong input to verify_hash" do
-    assert_raise ArgumentError, "Wrong type - password and salt should be strings", fn ->
-      Pbkdf2.verify_hash("$pbkdf2-sha512$19000$JMT4nzOmVKrV.p/TmlMKwQ$jKbZHoPwUWBT08pjb/CnUZmFcB9JW4dsOzVkfi9X6Pdn5NXWeY.mhL1Bm4V9rjYL5ZfA32uh7Gl2gt5YQa/JCA", nil)
+  test "wrong input to verify_pass" do
+    assert_raise ArgumentError, "Wrong type - the password should be a string", fn ->
+      Pbkdf2.verify_pass(nil, "$pbkdf2-sha512$19000$JMT4nzOmVKrV.p/TmlMKwQ$jKbZHoPwUWBT08pjb/CnUZmFcB9JW4dsOzVkfi9X6Pdn5NXWeY.mhL1Bm4V9rjYL5ZfA32uh7Gl2gt5YQa/JCA")
     end
   end
 

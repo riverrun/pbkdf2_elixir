@@ -29,7 +29,7 @@ defmodule Pbkdf2.Stats do
     password = Keyword.get(opts, :password, "password")
     salt = Keyword.get(opts, :salt, "somesaltSOMESALT")
     {exec_time, encoded} = :timer.tc(Pbkdf2.Base, :hash_password, [password, salt, opts])
-    Pbkdf2.verify_hash(encoded, password)
+    Pbkdf2.verify_pass(password, encoded)
     |> format_result(encoded, exec_time)
   end
 
@@ -41,7 +41,7 @@ defmodule Pbkdf2.Stats do
     Hash:\t\t#{encoded}
     Rounds:\t\t#{rounds}
     Time taken:\t#{format_time(exec_time)} seconds
-    Verification #{if check, do: "ok", else: "failed"}
+    Verification #{if check, do: "OK", else: "FAILED"}
     """
   end
 

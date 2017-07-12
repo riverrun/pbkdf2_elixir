@@ -10,7 +10,7 @@ defmodule Pbkdf2.StatsTest do
     assert report =~ "Digest length:\t64\n"
     assert report =~ "Hash:\t\t$pbkdf2-sha512$160000$"
     assert report =~ "Rounds:\t\t160000\n"
-    assert report =~ "Verification ok"
+    assert report =~ "Verification OK"
   end
 
   test "print report with pbkdf2_sha256" do
@@ -19,7 +19,7 @@ defmodule Pbkdf2.StatsTest do
     assert report =~ "Digest length:\t32\n"
     assert report =~ "Hash:\t\t$pbkdf2-sha256$160000$"
     assert report =~ "Rounds:\t\t160000\n"
-    assert report =~ "Verification ok"
+    assert report =~ "Verification OK"
   end
 
   test "use custom options" do
@@ -28,7 +28,7 @@ defmodule Pbkdf2.StatsTest do
     assert report =~ "Digest length:\t64\n"
     assert report =~ "Hash:\t\t$pbkdf2-sha512$300000$"
     assert report =~ "Rounds:\t\t300000\n"
-    assert report =~ "Verification ok"
+    assert report =~ "Verification OK"
   end
 
 end

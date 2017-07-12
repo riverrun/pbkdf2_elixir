@@ -52,24 +52,23 @@ defmodule Pbkdf2 do
   end
 
   @doc """
-  Verify an encoded Pbkdf2 hash.
+  Check the password.
+
+  The check is performed in constant time to avoid timing attacks.
 
   ## Options
 
-  There is one option:
-
     * output_fmt - the output format of the hash
       * the default is modular crypt format
-
   """
-  def verify_hash(stored_hash, password, opts \\ [])
-  def verify_hash(stored_hash, password, opts) when is_binary(password) do
+  def verify_pass(password, stored_hash, opts \\ [])
+  def verify_pass(password, stored_hash, opts) when is_binary(password) do
     [alg, rounds, salt, hash] = String.split(stored_hash, "$", trim: true)
     {digest, length} = if alg == "pbkdf2-sha512", do: {:sha512, 64}, else: {:sha256, 32}
-    Base.verify_hash(hash, password, salt, rounds, digest, length, opts[:output_fmt])
+    Base.verify_pass(password, hash, salt, rounds, digest, length, opts[:output_fmt])
   end
-  def verify_hash(_, _, _) do
-    raise ArgumentError, "Wrong type - password and salt should be strings"
+  def verify_pass(_, _, _) do
+    raise ArgumentError, "Wrong type - the password should be a string"
   end
 
   @doc """

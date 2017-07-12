@@ -2,6 +2,8 @@ defmodule Pbkdf2.Base64 do
   @moduledoc """
   Module that provides base64 encoding for pbkdf2.
 
+  Most developers will not need to use this module directly.
+
   Pbkdf2 uses an adapted base64 alphabet (using `.` instead of `+`
   and with no padding).
   """

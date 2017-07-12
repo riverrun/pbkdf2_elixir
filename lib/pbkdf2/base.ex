@@ -42,9 +42,9 @@ defmodule Pbkdf2.Base do
   end
 
   @doc """
-  Verify an encoded Pbkdf2 hash.
+  Verify a password by comparing it with the stored Pbkdf2 hash.
   """
-  def verify_hash(hash, password, salt, rounds, digest, length, output_fmt) do
+  def verify_pass(password, hash, salt, rounds, digest, length, output_fmt) do
     pbkdf2(password, Base64.decode(salt), String.to_integer(rounds), digest, length, 1, [], 0)
     |> verify_format(output_fmt)
     |> Tools.secure_check(hash)
