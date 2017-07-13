@@ -29,7 +29,7 @@ defmodule Pbkdf2 do
     :crypto.strong_rand_bytes(salt_length)
   end
   def gen_salt(_) do
-    raise ArgumentError, "The salt is the wrong length."
+    raise ArgumentError, "The salt is the wrong length"
   end
 
   @doc """
@@ -52,7 +52,7 @@ defmodule Pbkdf2 do
   end
 
   @doc """
-  Check the password.
+  Check the password by comparing it with the stored hash.
 
   The check is performed in constant time to avoid timing attacks.
 

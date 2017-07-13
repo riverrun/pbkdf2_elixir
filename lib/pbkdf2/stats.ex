@@ -7,6 +7,17 @@ defmodule Pbkdf2.Stats do
   The main configuration option for Pbkdf2 is the number of rounds that
   it uses. Increasing this value will increase the complexity, and time
   taken, of the Pbkdf2 function.
+
+  Increasing the time that a password hash function takes makes it more
+  difficult for an attacker to find the correct password. However, the
+  amount of time a valid user has to wait also needs to be taken into
+  consideration when setting the number of rounds.
+
+  The correct number of rounds depends on circumstances specific to your
+  use case, such as what level of security you want, how often the user
+  has to log in, and the hardware you are using. However, for password
+  hashing, we do not recommend setting the number of rounds to anything
+  less than 100_000.
   """
 
   alias Pbkdf2.Base64
@@ -23,7 +34,9 @@ defmodule Pbkdf2.Stats do
   digest and length), there are two options:
 
     * password - the password used
+      * the default is "password"
     * salt - the salt used
+      * the default is "somesaltSOMESALT"
   """
   def report(opts \\ []) do
     password = Keyword.get(opts, :password, "password")

@@ -22,7 +22,7 @@ defmodule Pbkdf2.Base64 do
 
   ## Examples
 
-      iex> Pbkdf2.Base64.encode "spamandeggs"
+      iex> Pbkdf2.Base64.encode("spamandeggs")
       "c3BhbWFuZGVnZ3M"
   """
   def encode(<<>>), do: <<>>

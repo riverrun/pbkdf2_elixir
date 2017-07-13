@@ -16,7 +16,7 @@ defmodule Pbkdf2.Base do
   There are four options:
 
     * rounds - the number of rounds
-      * increasing this will make the hash function take longer and therefore make it more difficult to attack
+      * the amount of computation, given in number of iterations
       * the default is 160_000
     * output_fmt - the output format of the hash
       * the default is modular crypt format
@@ -25,6 +25,15 @@ defmodule Pbkdf2.Base do
     * length - the length, in bytes, of the hash
       * the default is 64 for sha512 and 32 for sha256
 
+  The number of rounds can also be set in the config file.
+
+  If you are hashing passwords in your tests, it can be useful to add
+  the following to the `config/test.exs` file:
+
+      config :pbkdf2_elixir,
+        rounds: 1
+
+  NB. do not use these values in production.
   """
   def hash_password(password, salt, opts \\ [])
   def hash_password(password, salt, opts)
@@ -51,7 +60,7 @@ defmodule Pbkdf2.Base do
   end
 
   defp get_opts(opts) do
-    {Keyword.get(opts, :rounds, 160_000),
+    {Keyword.get(opts, :rounds, Application.get_env(:pbkdf2_elixir, :rounds, 160_000)),
     Keyword.get(opts, :format, :modular),
     case opts[:digest] do
       :sha256 -> {:sha256, opts[:length] || 32}

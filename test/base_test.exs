@@ -81,6 +81,13 @@ defmodule Pbkdf2.BaseTest do
     ] |> check_vectors(:sha256)
   end
 
+  test "configuring hash_password number of rounds" do
+    Application.put_env(:pbkdf2_elixir, :rounds, 1)
+    assert String.starts_with?(Base.hash_password("password", "somesalt"), "$pbkdf2-sha512$1$")
+    Application.delete_env(:pbkdf2_elixir, :rounds)
+    assert String.starts_with?(Base.hash_password("password", "somesalt"), "$pbkdf2-sha512$160000$")
+  end
+
   test "wrong input to hash_password" do
     assert_raise ArgumentError, "The password and salt should be strings and the salt must be at least 8 bytes long", fn ->
       Base.hash_password("password", nil)
