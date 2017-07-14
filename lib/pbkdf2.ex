@@ -55,19 +55,13 @@ defmodule Pbkdf2 do
   Check the password by comparing it with the stored hash.
 
   The check is performed in constant time to avoid timing attacks.
-
-  ## Options
-
-    * output_fmt - the output format of the hash
-      * the default is modular crypt format
   """
-  def verify_pass(password, stored_hash, opts \\ [])
-  def verify_pass(password, stored_hash, opts) when is_binary(password) do
+  def verify_pass(password, stored_hash) when is_binary(password) do
     [alg, rounds, salt, hash] = String.split(stored_hash, "$", trim: true)
     {digest, length} = if alg == "pbkdf2-sha512", do: {:sha512, 64}, else: {:sha256, 32}
-    Base.verify_pass(password, hash, salt, rounds, digest, length, opts[:output_fmt])
+    Base.verify_pass(password, hash, salt, rounds, digest, length, output(stored_hash))
   end
-  def verify_pass(_, _, _) do
+  def verify_pass(_, _) do
     raise ArgumentError, "Wrong type - the password should be a string"
   end
 
@@ -82,4 +76,7 @@ defmodule Pbkdf2 do
     hash_pwd_salt("password", opts)
     false
   end
+
+  defp output("$pbkdf2" <> _), do: :modular
+  defp output("pbkdf2" <> _), do: :django
 end

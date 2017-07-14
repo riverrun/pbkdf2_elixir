@@ -9,23 +9,36 @@ defmodule Pbkdf2.Base do
   @max_length bsl(1, 32) - 1
 
   @doc """
+  Generate a salt for use with Django's version of pbkdf2.
+
+  ## Examples
+
+  To create a valid Django hash, using pbkdf2_sha256:
+
+      salt = django_salt(12)
+      opts = [digest: :sha256, format: :django]
+      Pbkdf2.Base.hash_password(password, salt, opts)
+
+  This example uses 160_000 rounds. Add `rounds: number` to the opts
+  if you want to change the number of rounds.
+  """
+  def django_salt(len) do
+    :crypto.strong_rand_bytes(len * 2)
+    |> Pbkdf2.Base64.encode
+    |> String.replace(~r{[.|/]}, "")
+    |> :binary.part(0, len)
+  end
+
+  @doc """
   Hash a password using Pbkdf2.
 
-  ## Options
+  ## Configurable parameters
 
-  There are four options:
+  The following parameter can be set in the config file:
 
-    * rounds - the number of rounds
-      * the amount of computation, given in number of iterations
-      * the default is 160_000
-    * output_fmt - the output format of the hash
-      * the default is modular crypt format
-    * digest - the sha algorithm that pbkdf2 will use
-      * the default is sha512
-    * length - the length, in bytes, of the hash
-      * the default is 64 for sha512 and 32 for sha256
-
-  The number of rounds can also be set in the config file.
+    * rounds - computational cost
+      * the number of rounds
+      * 160_000 is the default
 
   If you are hashing passwords in your tests, it can be useful to add
   the following to the `config/test.exs` file:
@@ -33,7 +46,24 @@ defmodule Pbkdf2.Base do
       config :pbkdf2_elixir,
         rounds: 1
 
-  NB. do not use these values in production.
+  NB. do not use this value in production.
+
+  ## Options
+
+  There are four options (rounds can be used to override the value
+  in the config):
+
+    * rounds - the number of rounds
+      * the amount of computation, given in number of iterations
+      * the default is 160_000
+      * this can also be set in the config file
+    * output_fmt - the output format of the hash
+      * the default is modular crypt format
+    * digest - the sha algorithm that pbkdf2 will use
+      * the default is sha512
+    * length - the length, in bytes, of the hash
+      * the default is 64 for sha512 and 32 for sha256
+
   """
   def hash_password(password, salt, opts \\ [])
   def hash_password(password, salt, opts)
@@ -54,7 +84,8 @@ defmodule Pbkdf2.Base do
   Verify a password by comparing it with the stored Pbkdf2 hash.
   """
   def verify_pass(password, hash, salt, rounds, digest, length, output_fmt) do
-    pbkdf2(password, Base64.decode(salt), String.to_integer(rounds), digest, length, 1, [], 0)
+    salt = output_fmt == :modular and Base64.decode(salt)
+    pbkdf2(password, salt, String.to_integer(rounds), digest, length, 1, [], 0)
     |> verify_format(output_fmt)
     |> Tools.secure_check(hash)
   end
@@ -90,9 +121,12 @@ defmodule Pbkdf2.Base do
   defp format(hash, salt, digest, rounds, :modular) do
     "$pbkdf2-#{digest}$#{rounds}$#{Base64.encode(salt)}$#{Base64.encode(hash)}"
   end
+  defp format(hash, salt, digest, rounds, :django) do
+    "pbkdf2_#{digest}$#{rounds}$#{salt}$#{Base.encode64(hash)}"
+  end
   defp format(hash, _salt, _digest, _rounds, :hex), do: Base.encode16(hash, case: :lower)
 
-  defp verify_format(hash, _) do
-    Base64.encode(hash)
-  end
+  defp verify_format(hash, :modular), do: Base64.encode(hash)
+  defp verify_format(hash, :django), do: Base.encode64(hash)
+  defp verify_format(hash, _), do: hash
 end

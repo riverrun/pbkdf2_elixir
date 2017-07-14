@@ -3,9 +3,10 @@ defmodule Pbkdf2.BaseTest do
 
   alias Pbkdf2.Base
 
-  def check_vectors(data, digest \\ :sha512) do
+  def check_vectors(data, digest \\ :sha512, format \\ :modular) do
     for {password, salt, rounds, stored_hash} <- data do
-      assert Base.hash_password(password, salt, [rounds: rounds, digest: digest]) == stored_hash
+      opts = [rounds: rounds, digest: digest, format: format]
+      assert Base.hash_password(password, salt, opts) == stored_hash
     end
   end
 
@@ -81,6 +82,27 @@ defmodule Pbkdf2.BaseTest do
     ] |> check_vectors(:sha256)
   end
 
+  test "django format test vectors" do
+    [
+      {"pa$$word",
+        "xvJitqXFKLDy",
+        20_000,
+        "pbkdf2_sha256$20000$xvJitqXFKLDy$CEzm5tv/2IVR5vT1pgN1B9ebo3n62xktmhClSuMsrM4="},
+      {"passDATAb00AB7YxDTT",
+        "7T4cGyTsIqXl",
+        20_000,
+        "pbkdf2_sha256$20000$7T4cGyTsIqXl$SGp9lb20DSYXk1SY80NxFlGPOIN8apThVNanlL628aw="},
+      {"passDATAb00AB7YxDTTl",
+        "pOIkJ2DADj78",
+        20_000,
+        "pbkdf2_sha256$20000$pOIkJ2DADj78$6/xhxGrCHGUJsQSs16V5s1GtucMSgGdtfVKmCyJsv58="},
+      {"passDATAb00AB7YxDTTlRH2dqxDx19GDxDV1zFMz7E6QVqKIzwOtMnlxQLttpE5",
+        "T1TgNUPEvPnc",
+        20_000,
+        "pbkdf2_sha256$20000$T1TgNUPEvPnc$OBc2b5qo+EoPbkPEr1m4Vcbc8ip2IYG/AfiiIgB4vcQ="}
+    ] |> check_vectors(:sha256, :django)
+  end
+
   test "configuring hash_password number of rounds" do
     Application.put_env(:pbkdf2_elixir, :rounds, 1)
     assert String.starts_with?(Base.hash_password("password", "somesalt"), "$pbkdf2-sha512$1$")
@@ -95,6 +117,11 @@ defmodule Pbkdf2.BaseTest do
     assert_raise ArgumentError, "The password and salt should be strings and the salt must be at least 8 bytes long", fn ->
       Base.hash_password("password", "salt")
     end
+  end
+
+  test "django salt only contains alphanumeric characters" do
+    assert String.match?(Base.django_salt(12), ~r/^[A-Za-z0-9]*$/)
+    assert String.match?(Base.django_salt(32), ~r/^[A-Za-z0-9]*$/)
   end
 
 end
