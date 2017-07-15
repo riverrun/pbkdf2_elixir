@@ -31,4 +31,15 @@ defmodule Pbkdf2.StatsTest do
     assert report =~ "Verification OK"
   end
 
+  test "print report with django format" do
+    report = capture_io(fn -> Stats.report([format: :django]) end)
+    assert report =~ "Digest length:\t64\n"
+    assert report =~ "Hash:\t\tpbkdf2_sha512$160000$"
+    assert report =~ "Verification OK"
+    report = capture_io(fn -> Stats.report([digest: :sha256, format: :django]) end)
+    assert report =~ "Digest length:\t32\n"
+    assert report =~ "Hash:\t\tpbkdf2_sha256$160000$"
+    assert report =~ "Verification OK"
+  end
+
 end

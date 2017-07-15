@@ -47,16 +47,19 @@ defmodule Pbkdf2.Stats do
   end
 
   defp format_result(check, encoded, exec_time) do
-    [_, alg, rounds, _, hash] = String.split(encoded, "$")
+    [alg, rounds, _, hash] = String.split(encoded, "$", trim: true)
     IO.puts """
     Digest:\t\t#{alg}
-    Digest length:\t#{Base64.decode(hash) |> byte_size}
+    Digest length:\t#{digest_length(encoded, hash)}
     Hash:\t\t#{encoded}
     Rounds:\t\t#{rounds}
     Time taken:\t#{format_time(exec_time)} seconds
     Verification #{if check, do: "OK", else: "FAILED"}
     """
   end
+
+  defp digest_length("$pbkdf2" <> _, hash), do: Base64.decode(hash) |> byte_size
+  defp digest_length("pbkdf2" <> _, hash), do: Base.decode64!(hash) |> byte_size
 
   defp format_time(time) do
     Float.round(time / 1_000_000, 2)
