@@ -15,7 +15,7 @@ which provides a higher-level api.
 ```elixir
 def deps do
   [
-    {:pbkdf2_elixir, "~> 1.0"}
+    {:pbkdf2_elixir, "~> 0.12"}
   ]
 end
 ```
