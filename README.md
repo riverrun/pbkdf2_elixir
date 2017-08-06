@@ -12,12 +12,22 @@ which provides a higher-level api.
 
 ## Installation
 
+1. Add pbkdf2_elixir to the `deps` section of your mix.exs file:
+
 ```elixir
 def deps do
   [
     {:pbkdf2_elixir, "~> 0.12"}
   ]
 end
+```
+
+2. Optional: during tests (and tests only), you may want to reduce the number of rounds
+so it does not slow down your test suite. If you have a config/test.exs, you should
+add:
+
+```elixir
+config :pbkdf2_elixir, :rounds, 1
 ```
 
 ## Use
