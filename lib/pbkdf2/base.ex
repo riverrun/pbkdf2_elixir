@@ -57,7 +57,7 @@ defmodule Pbkdf2.Base do
       * the amount of computation, given in number of iterations
       * the default is 160_000
       * this can also be set in the config file
-    * output_fmt - the output format of the hash
+    * format - the output format of the hash
       * the default is modular crypt format
     * digest - the sha algorithm that pbkdf2 will use
       * the default is sha512

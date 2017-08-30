@@ -110,6 +110,15 @@ defmodule Pbkdf2.BaseTest do
     assert String.starts_with?(Base.hash_password("password", "somesalt"), "$pbkdf2-sha512$160000$")
   end
 
+  test "configuring output format" do
+    salt = Pbkdf2.gen_salt(12)
+    hash = Base.hash_password("password", salt, [digest: :sha256])
+    assert hash =~ "$pbkdf2-sha256"
+    salt = Base.django_salt(12)
+    hash = Base.hash_password("password", salt, [digest: :sha256, format: :django])
+    assert hash =~ "pbkdf2_sha256"
+  end
+
   test "wrong input to hash_password" do
     assert_raise ArgumentError, "The password and salt should be strings and the salt must be at least 8 bytes long", fn ->
       Base.hash_password("password", nil)
