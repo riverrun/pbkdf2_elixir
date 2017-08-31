@@ -130,4 +130,13 @@ defmodule Pbkdf2.BaseTest do
     assert String.match?(Base.django_salt(32), ~r/^[A-Za-z0-9]*$/)
   end
 
+  test "raises when password or salt is nil to hash_password" do
+    assert_raise ArgumentError, fn ->
+      Base.hash_password(nil, "somesalt")
+    end
+    assert_raise ArgumentError, fn ->
+      Base.hash_password("password", nil)
+    end
+  end
+
 end
