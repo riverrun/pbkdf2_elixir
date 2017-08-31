@@ -66,8 +66,7 @@ defmodule Pbkdf2.Base do
 
   """
   def hash_password(password, salt, opts \\ [])
-  def hash_password(password, salt, opts)
-      when is_binary(password) and is_binary(salt) and byte_size(salt) > 7 do
+  def hash_password(password, salt, opts) when byte_size(salt) > 7 do
     {rounds, output_fmt, {digest, length}} = get_opts(opts)
     if length > @max_length do
       raise ArgumentError, "length must be equal to or less than #{@max_length}"
@@ -76,8 +75,7 @@ defmodule Pbkdf2.Base do
     |> format(salt, digest, rounds, output_fmt)
   end
   def hash_password(_, _, _) do
-    raise ArgumentError, "The password and salt should be strings and " <>
-      "the salt must be at least 8 bytes long"
+    raise ArgumentError, "The salt must be at least 8 bytes long"
   end
 
   @doc """

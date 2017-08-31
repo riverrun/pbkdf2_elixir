@@ -39,10 +39,4 @@ defmodule Pbkdf2Test do
     assert byte_size(Pbkdf2.gen_salt(64)) == 64
   end
 
-  test "wrong input to verify_pass" do
-    assert_raise ArgumentError, "Wrong type - the password should be a string", fn ->
-      Pbkdf2.verify_pass(nil, "$pbkdf2-sha512$19000$JMT4nzOmVKrV.p/TmlMKwQ$jKbZHoPwUWBT08pjb/CnUZmFcB9JW4dsOzVkfi9X6Pdn5NXWeY.mhL1Bm4V9rjYL5ZfA32uh7Gl2gt5YQa/JCA")
-    end
-  end
-
 end
