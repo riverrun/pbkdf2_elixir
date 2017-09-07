@@ -66,24 +66,26 @@ defmodule Pbkdf2.Base do
 
   """
   def hash_password(password, salt, opts \\ [])
-  def hash_password(password, salt, opts) when byte_size(salt) > 7 do
+  def hash_password(password, salt, opts) when byte_size(salt) in 8..1024 do
     {rounds, output_fmt, {digest, length}} = get_opts(opts)
     if length > @max_length do
       raise ArgumentError, "length must be equal to or less than #{@max_length}"
     end
-    pbkdf2(password, salt, rounds, digest, length, 1, [], 0)
+    pbkdf2(password, salt, digest, rounds, length, 1, [], 0)
     |> format(salt, digest, rounds, output_fmt)
   end
   def hash_password(_, _, _) do
-    raise ArgumentError, "The salt must be at least 8 bytes long"
+    raise ArgumentError, """
+    The salt is the wrong length. It should be between 8 and 1024 bytes long.
+    """
   end
 
   @doc """
   Verify a password by comparing it with the stored Pbkdf2 hash.
   """
-  def verify_pass(password, hash, salt, rounds, digest, length, output_fmt) do
+  def verify_pass(password, hash, salt, digest, rounds, length, output_fmt) do
     salt = output_fmt == :modular and Base64.decode(salt) || salt
-    pbkdf2(password, salt, String.to_integer(rounds), digest, length, 1, [], 0)
+    pbkdf2(password, salt, digest, String.to_integer(rounds), length, 1, [], 0)
     |> verify_format(output_fmt)
     |> Tools.secure_check(hash)
   end
@@ -97,23 +99,23 @@ defmodule Pbkdf2.Base do
     end}
   end
 
-  defp pbkdf2(_password, _salt, _rounds, _digest, dklen, _block_index, acc, length)
+  defp pbkdf2(_password, _salt, _digest, _rounds, dklen, _block_index, acc, length)
       when length >= dklen do
     key = acc |> Enum.reverse |> IO.iodata_to_binary
     <<bin::binary-size(dklen), _::binary>> = key
     bin
   end
-  defp pbkdf2(password, salt, rounds, digest, dklen, block_index, acc, length) do
+  defp pbkdf2(password, salt, digest, rounds, dklen, block_index, acc, length) do
     initial = :crypto.hmac(digest, password, <<salt::binary, block_index::integer-size(32)>>)
-    block = iterate(password, rounds - 1, digest, initial, initial)
-    pbkdf2(password, salt, rounds, digest, dklen, block_index + 1,
+    block = iterate(password, digest, rounds - 1, initial, initial)
+    pbkdf2(password, salt, digest, rounds, dklen, block_index + 1,
       [block | acc], byte_size(block) + length)
   end
 
-  defp iterate(_password, 0, _digest, _prev, acc), do: acc
-  defp iterate(password, round, digest, prev, acc) do
+  defp iterate(_password, _digest, 0, _prev, acc), do: acc
+  defp iterate(password, digest, round, prev, acc) do
     next = :crypto.hmac(digest, password, prev)
-    iterate(password, round - 1, digest, next, :crypto.exor(next, acc))
+    iterate(password, digest, round - 1, next, :crypto.exor(next, acc))
   end
 
   defp format(hash, salt, digest, rounds, :modular) do
