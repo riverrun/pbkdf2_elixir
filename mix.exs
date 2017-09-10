@@ -37,8 +37,7 @@ defmodule Pbkdf2Elixir.Mixfile do
     [
       maintainers: ["David Whitlock"],
       licenses: ["BSD"],
-      links: %{"GitHub" => "https://github.com/riverrun/pbkdf2_elixir",
-        "Docs" => "http://hexdocs.pm/pbkdf2_elixir"}
+      links: %{"GitHub" => "https://github.com/riverrun/pbkdf2_elixir"}
     ]
   end
 end
