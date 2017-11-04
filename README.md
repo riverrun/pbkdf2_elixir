@@ -42,6 +42,10 @@ See the documentation for the Pbkdf2 module for more information.
 
 For a lower-level api, see the documentation for Pbkdf2.Base.
 
+## Deployment
+
+See the Comeonin [deployment guide](https://github.com/riverrun/comeonin/wiki/Deployment).
+
 ### License
 
 BSD.
