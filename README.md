@@ -42,6 +42,9 @@ See the documentation for the Pbkdf2 module for more information.
 
 For a lower-level api, see the documentation for Pbkdf2.Base.
 
+For further information about password hashing and using Pbkdf2 with Comeonin,
+see the Comeonin [wiki](https://github.com/riverrun/comeonin/wiki).
+
 ## Deployment
 
 See the Comeonin [deployment guide](https://github.com/riverrun/comeonin/wiki/Deployment).

@@ -2,6 +2,10 @@ defmodule Pbkdf2 do
   @moduledoc """
   Pbkdf2 password hashing library main module.
 
+  This library can be used on its own, or it can be used together with
+  [Comeonin](https://hexdocs.pm/comeonin/api-reference.html), which
+  provides a higher-level api.
+
   For a lower-level API, see Pbkdf2.Base.
 
   ## Pbkdf2

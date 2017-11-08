@@ -28,8 +28,7 @@ defmodule Pbkdf2Elixir.Mixfile do
 
   defp deps do
     [
-      {:earmark, "~> 1.2", only: :dev},
-      {:ex_doc,  "~> 0.16", only: :dev}
+      {:ex_doc, "~> 0.18", only: :dev, runtime: false}
     ]
   end
 
