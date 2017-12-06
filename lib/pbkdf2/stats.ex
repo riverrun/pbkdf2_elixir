@@ -33,9 +33,9 @@ defmodule Pbkdf2.Stats do
   In addition to the options for Pbkdf2.Base.hash_password (rounds, output_fmt,
   digest and length), there are two options:
 
-    * password - the password used
+    * `:password` - the password used
       * the default is "password"
-    * salt - the salt used
+    * `:salt` - the salt used
       * the default is "somesaltSOMESALT"
   """
   def report(opts \\ []) do

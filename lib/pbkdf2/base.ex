@@ -53,15 +53,15 @@ defmodule Pbkdf2.Base do
   There are four options (rounds can be used to override the value
   in the config):
 
-    * rounds - the number of rounds
+    * `:rounds` - the number of rounds
       * the amount of computation, given in number of iterations
       * the default is 160_000
       * this can also be set in the config file
-    * format - the output format of the hash
+    * `:format` - the output format of the hash
       * the default is modular crypt format
-    * digest - the sha algorithm that pbkdf2 will use
+    * `:digest` - the sha algorithm that pbkdf2 will use
       * the default is sha512
-    * length - the length, in bytes, of the hash
+    * `:length` - the length, in bytes, of the hash
       * the default is 64 for sha512 and 32 for sha256
 
   """
