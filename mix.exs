@@ -12,7 +12,7 @@ defmodule Pbkdf2Elixir.Mixfile do
       app: :pbkdf2_elixir,
       version: @version,
       elixir: "~> 1.4",
-      start_permanent: Mix.env == :prod,
+      start_permanent: Mix.env() == :prod,
       description: @description,
       package: package(),
       source_url: "https://github.com/riverrun/pbkdf2_elixir",

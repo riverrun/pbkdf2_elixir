@@ -42,20 +42,22 @@ defmodule Pbkdf2.Stats do
     password = Keyword.get(opts, :password, "password")
     salt = Keyword.get(opts, :salt, "somesaltSOMESALT")
     {exec_time, encoded} = :timer.tc(Pbkdf2.Base, :hash_password, [password, salt, opts])
+
     Pbkdf2.verify_pass(password, encoded)
     |> format_result(encoded, exec_time)
   end
 
   defp format_result(check, encoded, exec_time) do
     [alg, rounds, _, hash] = String.split(encoded, "$", trim: true)
-    IO.puts """
+
+    IO.puts("""
     Digest:\t\t#{alg}
     Digest length:\t#{digest_length(encoded, hash)}
     Hash:\t\t#{encoded}
     Rounds:\t\t#{rounds}
     Time taken:\t#{format_time(exec_time)} seconds
     Verification #{if check, do: "OK", else: "FAILED"}
-    """
+    """)
   end
 
   defp digest_length("$pbkdf2" <> _, hash), do: Base64.decode(hash) |> byte_size

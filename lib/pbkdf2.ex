@@ -38,9 +38,11 @@ defmodule Pbkdf2 do
   using a salt shorter than the default.
   """
   def gen_salt(salt_length \\ 16)
+
   def gen_salt(salt_length) when salt_length in 8..1024 do
     :crypto.strong_rand_bytes(salt_length)
   end
+
   def gen_salt(_) do
     raise ArgumentError, """
     The salt is the wrong length. It should be between 8 and 1024 bytes long.

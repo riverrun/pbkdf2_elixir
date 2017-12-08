@@ -10,7 +10,7 @@ defmodule Pbkdf2Test do
   end
 
   test "pbkdf2 dummy check" do
-    assert Pbkdf2.no_user_verify == false
+    assert Pbkdf2.no_user_verify() == false
   end
 
   test "hashing and checking passwords" do
@@ -24,8 +24,13 @@ defmodule Pbkdf2Test do
   end
 
   test "hashing and checking passwords with non-ascii characters" do
-    hash_check_password("Сколько лет, сколько зим", "Сколько лет,сколько зим",
-    "Сколько лет сколько зим", "Сколько лет, сколько")
+    hash_check_password(
+      "Сколько лет, сколько зим",
+      "Сколько лет,сколько зим",
+      "Сколько лет сколько зим",
+      "Сколько лет, сколько"
+    )
+
     hash_check_password("สวัสดีครับ", "สวัดีครับ", "สวัสสดีครับ", "วัสดีครับ")
   end
 
@@ -34,9 +39,8 @@ defmodule Pbkdf2Test do
   end
 
   test "gen_salt length of salt" do
-    assert byte_size(Pbkdf2.gen_salt) == 16
+    assert byte_size(Pbkdf2.gen_salt()) == 16
     assert byte_size(Pbkdf2.gen_salt(32)) == 32
     assert byte_size(Pbkdf2.gen_salt(64)) == 64
   end
-
 end
