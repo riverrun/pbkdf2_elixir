@@ -112,6 +112,30 @@ defmodule Pbkdf2.BaseTest do
     |> check_vectors(:sha256)
   end
 
+  test "Consistency tests for sha1" do
+    [
+      {
+        "funferal",
+        <<192, 39, 248, 127, 11, 37, 71, 252, 74, 75, 244, 70, 129, 27, 51, 71>>,
+        60_000,
+        "$pbkdf2-sha$60000$wCf4fwslR/xKS/RGgRszRw$qqRfeM6yPZmxt/AffiJ5BA"
+      },
+      {
+        "he's N0t the Me551ah!",
+        <<60, 130, 11, 97, 11, 23, 236, 250, 227, 233, 56, 1, 86, 131, 41, 163>>,
+        80_000,
+        "$pbkdf2-sha$80000$PIILYQsX7Prj6TgBVoMpow$vxrO32YrdE5Onr5Z/YT94Q"
+      },
+      {
+        "ἓν οἶδα ὅτι οὐδὲν οἶδα",
+        <<29, 10, 228, 45, 215, 110, 213, 118, 168, 14, 197, 198, 67, 72, 34, 221>>,
+        100_000,
+        "$pbkdf2-sha$100000$HQrkLddu1XaoDsXGQ0gi3Q$QsWJrSVF4TSXaJ3zb2j/4A"
+      }
+    ]
+    |> check_vectors(:sha1)
+  end
+
   test "django format test vectors" do
     [
       {
@@ -164,7 +188,7 @@ defmodule Pbkdf2.BaseTest do
 
   test "wrong length salt to hash_password" do
     assert_raise ArgumentError, ~r/The salt is the wrong length/, fn ->
-      Base.hash_password("password", "salt")
+      Base.hash_password("password", "foo")
     end
   end
 

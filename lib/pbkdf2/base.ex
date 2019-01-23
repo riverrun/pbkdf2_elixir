@@ -67,7 +67,7 @@ defmodule Pbkdf2.Base do
   """
   def hash_password(password, salt, opts \\ [])
 
-  def hash_password(password, salt, opts) when byte_size(salt) in 8..1024 do
+  def hash_password(password, salt, opts) when byte_size(salt) in 4..1024 do
     {rounds, output_fmt, {digest, length}} = get_opts(opts)
 
     if length > @max_length do
@@ -80,7 +80,7 @@ defmodule Pbkdf2.Base do
 
   def hash_password(_, _, _) do
     raise ArgumentError, """
-    The salt is the wrong length. It should be between 8 and 1024 bytes long.
+    The salt is the wrong length. It should be between 4 and 1024 bytes long.
     """
   end
 
@@ -100,6 +100,7 @@ defmodule Pbkdf2.Base do
       Keyword.get(opts, :rounds, Application.get_env(:pbkdf2_elixir, :rounds, 160_000)),
       Keyword.get(opts, :format, :modular),
       case opts[:digest] do
+        :sha1 -> {:sha, opts[:length] || 16} 
         :sha256 -> {:sha256, opts[:length] || 32}
         _ -> {:sha512, opts[:length] || 64}
       end
@@ -145,6 +146,7 @@ defmodule Pbkdf2.Base do
   end
 
   defp format(hash, _salt, _digest, _rounds, :hex), do: Base.encode16(hash, case: :lower)
+  defp format(hash, _salt, _digest, _rounds, :raw), do: hash
 
   defp verify_format(hash, :modular), do: Base64.encode(hash)
   defp verify_format(hash, :django), do: Base.encode64(hash)

@@ -25,6 +25,10 @@ defmodule Pbkdf2.ReferenceTest do
     end
   end
 
+  test "sha1 reference tests" do
+    read_file("pbkdf2_sha1_test_vectors", :sha1)
+  end
+
   test "sha256 reference tests" do
     read_file("pbkdf2_sha256_test_vectors", :sha256)
   end
