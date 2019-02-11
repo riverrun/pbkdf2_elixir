@@ -75,7 +75,7 @@ defmodule Pbkdf2 do
   """
   def verify_pass(password, stored_hash) do
     [alg, rounds, salt, hash] = String.split(stored_hash, "$", trim: true)
-    {digest, length} = if alg =~ "sha512", do: {:sha512, 64}, else: {:sha256, 32}
+    {digest, length} = if alg =~ "sha512", do: {:sha512, byte_size(Pbkdf2.Base64.decode(hash))}, else: {:sha256, byte_size(Pbkdf2.Base64.decode(hash))}
     Base.verify_pass(password, hash, salt, digest, rounds, length, output(stored_hash))
   end
 
