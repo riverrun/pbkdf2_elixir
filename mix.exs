@@ -1,7 +1,7 @@
 defmodule Pbkdf2Elixir.Mixfile do
   use Mix.Project
 
-  @version "0.12.4"
+  @version "1.0.0"
 
   @description """
   Pbkdf2 password hashing algorithm for Elixir
@@ -11,7 +11,7 @@ defmodule Pbkdf2Elixir.Mixfile do
     [
       app: :pbkdf2_elixir,
       version: @version,
-      elixir: "~> 1.4",
+      elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       description: @description,
       package: package(),
@@ -28,7 +28,8 @@ defmodule Pbkdf2Elixir.Mixfile do
 
   defp deps do
     [
-      {:ex_doc, "~> 0.18", only: :dev, runtime: false}
+      {:comeonin, "~> 5.0"},
+      {:ex_doc, "~> 0.19", only: :dev, runtime: false}
     ]
   end
 

@@ -1,14 +1,18 @@
 # Pbkdf2
 
-Pbkdf2 password hashing algorithm for Elixir.
+[![Hex.pm Version](http://img.shields.io/hexpm/v/pbkdf2_elixir.svg)](https://hex.pm/packages/pbkdf2_elixir)
+
+Pbkdf2 password hashing library for Elixir.
 
 Pbkdf2 is a well-tested password-based key derivation function that can be
 configured to remain slow and resistant to brute-force attacks even as
 computational power increases.
 
-This library can be used on its own, or it can be used together
-with [Comeonin](https://hexdocs.pm/comeonin/api-reference.html),
-which provides a higher-level api.
+## Comparison with the Plug.Crypto version of Pbkdf2
+
+If you want the Pbkdf2 output to be in binary (raw) or hex format, you might
+find [Plug.Crypto.KeyGenerator](https://hexdocs.pm/plug_crypto/Plug.Crypto.KeyGenerator.html)
+more convenient.
 
 ## Installation
 
@@ -17,7 +21,7 @@ which provides a higher-level api.
 ```elixir
 def deps do
   [
-    {:pbkdf2_elixir, "~> 0.12"}
+    {:pbkdf2_elixir, "~> 1.0"}
   ]
 end
 ```
@@ -30,24 +34,35 @@ add:
 config :pbkdf2_elixir, :rounds, 1
 ```
 
-## Use
+## Comeonin wiki
 
-In most cases, you will just need to use the following three functions:
+See the [Comeonin wiki](https://github.com/riverrun/comeonin/wiki) for more
+information on the following topics:
 
-* hash_pwd_salt - hash a password with a randomly-generated salt
-* verify_pass - check the password by comparing it with a stored hash
-* no_user_verify - perform a dummy check to make user enumeration more difficult
+* [algorithms](https://github.com/riverrun/comeonin/wiki/Choosing-the-password-hashing-algorithm)
+* [requirements](https://github.com/riverrun/comeonin/wiki/Requirements)
+* [deployment](https://github.com/riverrun/comeonin/wiki/Deployment)
+  * including information about using Docker
+* [references](https://github.com/riverrun/comeonin/wiki/References)
 
-See the documentation for the Pbkdf2 module for more information.
+## Contributing
 
-For a lower-level api, see the documentation for Pbkdf2.Base.
+There are many ways you can contribute to the development of this library, including:
 
-For further information about password hashing and using Pbkdf2 with Comeonin,
-see the Comeonin [wiki](https://github.com/riverrun/comeonin/wiki).
+* reporting issues
+* improving documentation
+* sharing your experiences with others
+* [making a financial contribution](#donations)
 
-## Deployment
+## Donations
 
-See the Comeonin [deployment guide](https://github.com/riverrun/comeonin/wiki/Deployment).
+This software is offered free of charge, but if you find it useful
+and you would like to buy me a cup of coffee, you can do so through
+[paypal](https://www.paypal.me/alovedalongthe).
+
+### Documentation
+
+http://hexdocs.pm/pbkdf2_elixir
 
 ### License
 

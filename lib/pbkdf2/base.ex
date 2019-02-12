@@ -32,22 +32,6 @@ defmodule Pbkdf2.Base do
   @doc """
   Hash a password using Pbkdf2.
 
-  ## Configurable parameters
-
-  The following parameter can be set in the config file:
-
-    * rounds - computational cost
-      * the number of rounds
-      * 160_000 is the default
-
-  If you are hashing passwords in your tests, it can be useful to add
-  the following to the `config/test.exs` file:
-
-      config :pbkdf2_elixir,
-        rounds: 1
-
-  NB. do not use this value in production.
-
   ## Options
 
   There are four options (rounds can be used to override the value
@@ -93,7 +77,8 @@ defmodule Pbkdf2.Base do
       _ -> {salt, byte_size(Base.decode64!(hash))}
     end
 
-    pbkdf2(password, salt, digest, String.to_integer(rounds), length, 1, [], 0)
+    password
+    |> pbkdf2(salt, digest, String.to_integer(rounds), length, 1, [], 0)
     |> verify_format(output_fmt)
     |> Tools.secure_check(hash)
   end
