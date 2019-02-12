@@ -43,4 +43,11 @@ defmodule Pbkdf2Test do
     assert byte_size(Pbkdf2.gen_salt(32)) == 32
     assert byte_size(Pbkdf2.gen_salt(64)) == 64
   end
+
+  test "hashes with different lengths are correctly verified" do
+    hash = Pbkdf2.hash_pwd_salt("password", length: 128)
+    assert Pbkdf2.verify_pass("password", hash) == true
+    django_hash = Pbkdf2.hash_pwd_salt("password", length: 128, format: :django)
+    assert Pbkdf2.verify_pass("password", django_hash) == true
+  end
 end

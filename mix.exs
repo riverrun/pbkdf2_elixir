@@ -1,7 +1,7 @@
 defmodule Pbkdf2Elixir.Mixfile do
   use Mix.Project
 
-  @version "0.12.3"
+  @version "0.12.4"
 
   @description """
   Pbkdf2 password hashing algorithm for Elixir
