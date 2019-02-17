@@ -1,5 +1,6 @@
 defmodule Pbkdf2Test do
-  use ExUnit.Case, async: false
+  use ExUnit.Case
+  doctest Pbkdf2
 
   import Pbkdf2TestHelper
 
