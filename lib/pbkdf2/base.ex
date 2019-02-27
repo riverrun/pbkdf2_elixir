@@ -58,7 +58,8 @@ defmodule Pbkdf2.Base do
       raise ArgumentError, "length must be equal to or less than #{@max_length}"
     end
 
-    pbkdf2(password, salt, digest, rounds, length, 1, [], 0)
+    password
+    |> pbkdf2(salt, digest, rounds, length, 1, [], 0)
     |> format(salt, digest, rounds, output_fmt)
   end
 
