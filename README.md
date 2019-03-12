@@ -1,6 +1,7 @@
 # Pbkdf2
 
 [![Hex.pm Version](http://img.shields.io/hexpm/v/pbkdf2_elixir.svg)](https://hex.pm/packages/pbkdf2_elixir)
+[![Build Status](https://travis-ci.com/riverrun/pbkdf2_elixir.svg?branch=master)](https://travis-ci.com/riverrun/pbkdf2_elixir)
 
 Pbkdf2 password hashing library for Elixir.
 

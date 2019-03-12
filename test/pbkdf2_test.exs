@@ -42,7 +42,7 @@ defmodule Pbkdf2Test do
   end
 
   test "hashes with different number of rounds are correctly verified" do
-    hash = Pbkdf2.hash_pwd_salt("password", rounds: 100000)
+    hash = Pbkdf2.hash_pwd_salt("password", rounds: 100_000)
     assert Pbkdf2.verify_pass("password", hash) == true
     django_hash = Pbkdf2.hash_pwd_salt("password", rounds: 10000, format: :django)
     assert Pbkdf2.verify_pass("password", django_hash) == true
@@ -50,8 +50,7 @@ defmodule Pbkdf2Test do
 
   test "add_hash and check_pass" do
     assert {:ok, user} = Pbkdf2.add_hash("password") |> Pbkdf2.check_pass("password")
-    assert {:error, "invalid password"} =
-             Pbkdf2.add_hash("pass") |> Pbkdf2.check_pass("password")
+    assert {:error, "invalid password"} = Pbkdf2.add_hash("pass") |> Pbkdf2.check_pass("password")
     assert Map.has_key?(user, :password_hash)
   end
 
@@ -59,9 +58,11 @@ defmodule Pbkdf2Test do
     assert {:ok, user} =
              Pbkdf2.add_hash("password", hash_key: :encrypted_password)
              |> Pbkdf2.check_pass("password")
+
     assert {:error, "invalid password"} =
              Pbkdf2.add_hash("pass", hash_key: :encrypted_password)
              |> Pbkdf2.check_pass("password")
+
     assert Map.has_key?(user, :encrypted_password)
   end
 
@@ -69,6 +70,7 @@ defmodule Pbkdf2Test do
     assert {:ok, user} =
              Pbkdf2.add_hash("password", hash_key: :custom_hash)
              |> Pbkdf2.check_pass("password", hash_key: :custom_hash)
+
     assert Map.has_key?(user, :custom_hash)
   end
 

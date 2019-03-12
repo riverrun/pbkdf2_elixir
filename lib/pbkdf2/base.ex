@@ -73,10 +73,11 @@ defmodule Pbkdf2.Base do
   Verify a password by comparing it with the stored Pbkdf2 hash.
   """
   def verify_pass(password, hash, salt, digest, rounds, output_fmt) do
-    {salt, length} = case output_fmt do
-      :modular -> {Base64.decode(salt), byte_size(Pbkdf2.Base64.decode(hash))}
-      _ -> {salt, byte_size(Base.decode64!(hash))}
-    end
+    {salt, length} =
+      case output_fmt do
+        :modular -> {Base64.decode(salt), byte_size(Pbkdf2.Base64.decode(hash))}
+        _ -> {salt, byte_size(Base.decode64!(hash))}
+      end
 
     password
     |> pbkdf2(salt, digest, String.to_integer(rounds), length, 1, [], 0)
