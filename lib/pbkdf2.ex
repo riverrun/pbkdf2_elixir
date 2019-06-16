@@ -1,6 +1,6 @@
 defmodule Pbkdf2 do
   @moduledoc """
-   Pbkdf2 password hashing library main module.
+   Elixir wrapper for the Pbkdf2 password hashing function.
 
    This module implements the Comeonin and Comeonin.PasswordHash behaviours,
    providing the following functions:
@@ -38,16 +38,16 @@ defmodule Pbkdf2 do
 
    ### add_hash
 
-     * `hash_key` - the key used in the map for the password hash
+     * `:hash_key` - the key used in the map for the password hash
        * the default is `password_hash`
      * `:salt_len` - the length of the random salt
        * the default is 16 (the minimum is 8) bytes
 
    ### check_pass
 
-     * `hash_key` - the key used in the user struct for the password hash
+     * `:hash_key` - the key used in the user struct for the password hash
        * if this is not set, `check_pass` will look for `password_hash`, and then `encrypted_password`
-     * `hide_user` - run `no_user_verify` to prevent user enumeration
+     * `:hide_user` - run `no_user_verify` to prevent user enumeration
        * the default is true
        * set this to false if you do not want to hide usernames
 
@@ -91,7 +91,7 @@ defmodule Pbkdf2 do
       def verify_user(%{"password" => password} = params) do
         params
         |> Accounts.get_by()
-        |> Bcrypt.check_pass(password)
+        |> Pbkdf2.check_pass(password)
       end
 
    The `Accounts.get_by` function in this example takes the user parameters
