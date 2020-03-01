@@ -1,7 +1,7 @@
 defmodule Pbkdf2Elixir.Mixfile do
   use Mix.Project
 
-  @version "1.1.0"
+  @version "1.2.1"
 
   @description """
   Pbkdf2 password hashing algorithm for Elixir
@@ -31,14 +31,15 @@ defmodule Pbkdf2Elixir.Mixfile do
 
   defp deps do
     [
-      {:comeonin, "~> 5.2"},
-      {:ex_doc, "~> 0.19", only: :dev, runtime: false},
+      {:comeonin, "~> 5.3"},
+      {:ex_doc, "~> 0.20", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0.0-rc.3", only: :dev, runtime: false}
     ]
   end
 
   defp package do
     [
+      files: ["lib", "mix.exs", "README.md", "LICENSE"],
       maintainers: ["David Whitlock"],
       licenses: ["BSD"],
       links: %{"GitHub" => "https://github.com/riverrun/pbkdf2_elixir"}

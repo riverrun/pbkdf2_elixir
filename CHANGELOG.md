@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.2.0
+
+* Changes
+  * using Comeonin v5.3, which changes `add_hash` so that it does NOT set the password to nil
+
 ## v1.1.0
 
 * Enhancements
