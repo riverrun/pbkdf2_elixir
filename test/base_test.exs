@@ -168,6 +168,13 @@ defmodule Pbkdf2.BaseTest do
     end
   end
 
+  test "wrong length salt to hash_password with validation disabled" do
+    hash = Base.hash_password("password", "salt", validate: false)
+
+    assert hash ==
+             "$pbkdf2-sha512$160000$c2FsdA$HN7oo2v9z2QCKXcSvky3cWU0nr42Q760yKIjspJW60DIOX4RWF/PGkQ9mMLM1VPidslMbMWzVYNRC3kqBiLeUg"
+  end
+
   test "django salt only contains alphanumeric characters" do
     assert String.match?(Base.django_salt(12), ~r/^[A-Za-z0-9]*$/)
     assert String.match?(Base.django_salt(32), ~r/^[A-Za-z0-9]*$/)

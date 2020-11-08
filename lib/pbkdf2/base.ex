@@ -47,11 +47,20 @@ defmodule Pbkdf2.Base do
       * the default is sha512
     * `:length` - the length, in bytes, of the hash
       * the default is 64 for sha512 and 32 for sha256
+    * `:validate` - whether the salt length should be validated
+      * the default is true, which means an `ArgumentError` is raised unless
+        the salt length is between 8 and 1024 bytes long
 
   """
   def hash_password(password, salt, opts \\ [])
 
-  def hash_password(password, salt, opts) when byte_size(salt) in 8..1024 do
+  def hash_password(password, salt, opts) do
+    unless byte_size(salt) in 8..1024 or opts[:validate] == false do
+      raise ArgumentError, """
+      The salt is the wrong length. It should be between 8 and 1024 bytes long.
+      """
+    end
+
     {rounds, output_fmt, {digest, length}} = get_opts(opts)
 
     if length > @max_length do
@@ -61,12 +70,6 @@ defmodule Pbkdf2.Base do
     password
     |> pbkdf2(salt, digest, rounds, length, 1, [], 0)
     |> format(salt, digest, rounds, output_fmt)
-  end
-
-  def hash_password(_, _, _) do
-    raise ArgumentError, """
-    The salt is the wrong length. It should be between 8 and 1024 bytes long.
-    """
   end
 
   @doc """
