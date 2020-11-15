@@ -47,21 +47,40 @@ defmodule Pbkdf2 do
   alias Pbkdf2.Base
 
   @doc """
-  Generate a random salt.
+  Generates a random salt.
 
-  The minimum length of the salt is 8 bytes and the maximum length is
-  1024. The default length for the salt is 16 bytes. We do not recommend
-  using a salt shorter than the default.
+  This function takes one optional argument - the salt length (in bytes),
+  which must be between 0 and 1024. The default length is 16 bytes.
+
+  ## Salt length recommendations
+
+  In most cases, 16 bytes is a suitable length for the salt.
+  It is not recommended to use a salt that is shorter than this
+  (see below for details and references).
+
+  According to the [Pbkdf2 standard](https://tools.ietf.org/html/rfc8018),
+  the salt should be at least 8 bytes long, but according to [NIST
+  recommendations](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf),
+  the minimum salt length should be 16 bytes.
   """
   def gen_salt(salt_length \\ 16)
 
-  def gen_salt(salt_length) when salt_length in 8..1024 do
+  def gen_salt(salt_length) when salt_length < 8 do
+    IO.warn(
+      "Using a salt less than 8 bytes long is not recommended. " <>
+        "Please see the documentation for details."
+    )
+
+    :crypto.strong_rand_bytes(salt_length)
+  end
+
+  def gen_salt(salt_length) when salt_length < 1025 do
     :crypto.strong_rand_bytes(salt_length)
   end
 
   def gen_salt(_) do
     raise ArgumentError, """
-    The salt is the wrong length. It should be between 8 and 1024 bytes long.
+    The salt is the wrong length. It should be between 0 and 1024 bytes long.
     """
   end
 

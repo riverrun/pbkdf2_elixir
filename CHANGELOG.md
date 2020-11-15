@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.3.0
+
+* Changes
+  * changed minimum salt length to 0 bytes and added warning for salts between 0 and 8 bytes long
+  * updated documentation about salt length with more information about the minimum recommended value
+
 ## v1.2.0
 
 * Changes
