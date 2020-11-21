@@ -8,25 +8,12 @@ defmodule Pbkdf2.Base do
 
   @max_length bsl(1, 32) - 1
 
+  # deprecate this function & remove next major version
   @doc """
   Generate a salt for use with Django's version of pbkdf2.
-
-  ## Examples
-
-  To create a valid Django hash, using pbkdf2_sha256:
-
-      salt = django_salt(12)
-      opts = [digest: :sha256, format: :django]
-      Pbkdf2.Base.hash_password(password, salt, opts)
-
-  This example uses 160_000 rounds. Add `rounds: number` to the opts
-  if you want to change the number of rounds.
   """
   def django_salt(len) do
-    :crypto.strong_rand_bytes(len * 2)
-    |> Pbkdf2.Base64.encode()
-    |> String.replace(~r{[.|/]}, "")
-    |> :binary.part(0, len)
+    Tools.get_random_string(len)
   end
 
   @doc """
@@ -49,9 +36,8 @@ defmodule Pbkdf2.Base do
       * the default is 64 for sha512 and 32 for sha256
 
   """
-  def hash_password(password, salt, opts \\ [])
-
-  def hash_password(password, salt, opts) when byte_size(salt) in 8..1024 do
+  def hash_password(password, salt, opts \\ []) do
+    Tools.check_salt_length(byte_size(salt))
     {rounds, output_fmt, {digest, length}} = get_opts(opts)
 
     if length > @max_length do
@@ -61,12 +47,6 @@ defmodule Pbkdf2.Base do
     password
     |> pbkdf2(salt, digest, rounds, length, 1, [], 0)
     |> format(salt, digest, rounds, output_fmt)
-  end
-
-  def hash_password(_, _, _) do
-    raise ArgumentError, """
-    The salt is the wrong length. It should be between 8 and 1024 bytes long.
-    """
   end
 
   @doc """

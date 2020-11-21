@@ -3,6 +3,35 @@ defmodule Pbkdf2.Tools do
 
   use Bitwise
 
+  @allowed_chars 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+
+  def get_random_string(len, allowed_chars \\ @allowed_chars) do
+    high = length(allowed_chars)
+
+    Enum.to_list(1..len)
+    |> Enum.reduce([], fn _x, acc ->
+      [Enum.at(allowed_chars, :crypto.rand_uniform(0, high))] ++ acc
+    end)
+    |> to_string()
+  end
+
+  def check_salt_length(salt_len) when salt_len < 8 do
+    IO.warn(
+      "Using a salt less than 8 bytes long is not recommended. " <>
+        "Please see the documentation for details."
+    )
+
+    :ok
+  end
+
+  def check_salt_length(salt_len) when salt_len > 1024 do
+    raise ArgumentError, """
+    The salt is too long. The maximum length is 1024 bytes.
+    """
+  end
+
+  def check_salt_length(_), do: :ok
+
   def secure_check(hash, stored) do
     if byte_size(hash) == byte_size(stored) do
       secure_check(hash, stored, 0) == 0

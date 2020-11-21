@@ -2,6 +2,8 @@
 
 ## v1.3.0
 
+* Bug fixes
+  * made sure that `django_salt` does not contain a '$' sign, which would break `verify_pass`
 * Changes
   * changed minimum salt length to 0 bytes and added warning for salts between 0 and 8 bytes long
   * updated documentation about salt length with more information about the minimum recommended value

@@ -1,6 +1,8 @@
 defmodule Pbkdf2.BaseTest do
   use ExUnit.Case, async: false
 
+  import ExUnit.CaptureIO
+
   alias Pbkdf2.Base
 
   def check_vectors(data, digest \\ :sha512, format \\ :modular) do
@@ -163,14 +165,17 @@ defmodule Pbkdf2.BaseTest do
   end
 
   test "wrong length salt to hash_password" do
-    assert_raise ArgumentError, ~r/The salt is the wrong length/, fn ->
-      Base.hash_password("password", "salt")
-    end
+    assert capture_io(:stderr, fn ->
+             Base.hash_password("password", "salt")
+           end) =~ "salt less than 8 bytes long is not recommended"
   end
 
-  test "django salt only contains alphanumeric characters" do
-    assert String.match?(Base.django_salt(12), ~r/^[A-Za-z0-9]*$/)
-    assert String.match?(Base.django_salt(32), ~r/^[A-Za-z0-9]*$/)
+  test "hash_password raises if salt is too long" do
+    salt = String.duplicate("waytoolooongsalt", 64) <> "a"
+
+    assert_raise ArgumentError, fn ->
+      Base.hash_password("password", salt)
+    end
   end
 
   test "raises when password or salt is nil to hash_password" do

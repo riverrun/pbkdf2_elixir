@@ -37,7 +37,7 @@ defmodule Pbkdf2Test do
 
   test "gen_salt prints warnings for salts that are too short" do
     assert capture_io(:stderr, fn -> Pbkdf2.gen_salt(7) end) =~
-             "Using a salt less than 8 bytes long is not recommended"
+             "salt less than 8 bytes long is not recommended"
   end
 
   test "gen_salt raises if salt is too long" do
@@ -46,14 +46,25 @@ defmodule Pbkdf2Test do
     end
   end
 
-  test "hashes with different lengths are correctly verified" do
+  test "hash_pwd_salt only contains alphanumeric characters" do
+    assert String.match?(Pbkdf2.hash_pwd_salt("password"), ~r/^[A-Za-z0-9.$\/\-]*$/)
+
+    assert String.match?(
+             Pbkdf2.hash_pwd_salt("password", format: :django),
+             ~r/^[A-Za-z0-9+$_=\/]*$/
+           )
+
+    assert String.match?(Pbkdf2.hash_pwd_salt("password", format: :hex), ~r/^[A-Za-z0-9]*$/)
+  end
+
+  test "hashes with different lengths are correctly created and verified" do
     hash = Pbkdf2.hash_pwd_salt("password", length: 128)
     assert Pbkdf2.verify_pass("password", hash) == true
     django_hash = Pbkdf2.hash_pwd_salt("password", length: 128, format: :django)
     assert Pbkdf2.verify_pass("password", django_hash) == true
   end
 
-  test "hashes with different number of rounds are correctly verified" do
+  test "hashes with different number of rounds are correctly created and verified" do
     hash = Pbkdf2.hash_pwd_salt("password", rounds: 100_000)
     assert Pbkdf2.verify_pass("password", hash) == true
     django_hash = Pbkdf2.hash_pwd_salt("password", rounds: 10000, format: :django)
@@ -97,5 +108,9 @@ defmodule Pbkdf2Test do
   test "check_pass with password that is not a string" do
     assert {:error, message} = Pbkdf2.add_hash("pass") |> Pbkdf2.check_pass(nil)
     assert message =~ "password is not a string"
+  end
+
+  # maybe move this to base_test + add comment stating reason for this test
+  test "verify_pass can check hash with old django_salt" do
   end
 end

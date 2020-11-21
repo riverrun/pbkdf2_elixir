@@ -44,7 +44,7 @@ defmodule Pbkdf2 do
 
   use Comeonin
 
-  alias Pbkdf2.Base
+  alias Pbkdf2.{Base, Tools}
 
   @doc """
   Generates a random salt.
@@ -63,25 +63,15 @@ defmodule Pbkdf2 do
   recommendations](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf),
   the minimum salt length should be 16 bytes.
   """
-  def gen_salt(salt_length \\ 16)
+  # MAYBE change this to accept opts as single argument
+  # but accept integer as argument until next major version
+  def gen_salt(salt_len \\ 16, format \\ :modular) do
+    Tools.check_salt_length(salt_len)
 
-  def gen_salt(salt_length) when salt_length < 8 do
-    IO.warn(
-      "Using a salt less than 8 bytes long is not recommended. " <>
-        "Please see the documentation for details."
-    )
-
-    :crypto.strong_rand_bytes(salt_length)
-  end
-
-  def gen_salt(salt_length) when salt_length < 1025 do
-    :crypto.strong_rand_bytes(salt_length)
-  end
-
-  def gen_salt(_) do
-    raise ArgumentError, """
-    The salt is the wrong length. It should be between 0 and 1024 bytes long.
-    """
+    case format do
+      :django -> Tools.get_random_string(salt_len)
+      _ -> :crypto.strong_rand_bytes(salt_len)
+    end
   end
 
   @doc """
@@ -114,7 +104,10 @@ defmodule Pbkdf2 do
   """
   @impl true
   def hash_pwd_salt(password, opts \\ []) do
-    Base.hash_password(password, Keyword.get(opts, :salt_len, 16) |> gen_salt, opts)
+    salt_len = Keyword.get(opts, :salt_len, 16)
+    format = Keyword.get(opts, :format, :modular)
+    salt = gen_salt(salt_len, format)
+    Base.hash_password(password, salt, opts)
   end
 
   @doc """
