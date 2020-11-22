@@ -2,9 +2,6 @@ defmodule Pbkdf2 do
   @moduledoc """
   Elixir wrapper for the Pbkdf2 password hashing function.
 
-  Most applications will just need to use the `add_hash/2` and `check_pass/3`
-  convenience functions in this module.
-
   For a lower-level API, see Pbkdf2.Base.
 
   ## Configuration
@@ -49,8 +46,33 @@ defmodule Pbkdf2 do
   @doc """
   Generates a random salt.
 
-  This function takes one optional argument - the salt length (in bytes),
-  which must be between 0 and 1024. The default length is 16 bytes.
+  This function takes one optional argument - a keyword list (see below
+  for options) or an integer with the salt length (in bytes).
+
+  ## Options
+
+  The following options are available:
+
+    * `:salt_len` - the length of the random salt
+      * the default is 16 bytes
+      * for more information, see the 'Salt length recommendations' section below
+    * `:format` - the length of the random salt
+      * the default is `:modular` (modular crypt format)
+      * the other available options are `:django` and `:hex`
+
+  ## Examples
+
+  Here is an example of generating a salt with the default salt length and format:
+
+      Pbkdf2.gen_salt()
+
+  To generate a different length salt:
+
+      Pbkdf2.gen_salt(salt_len: 32)
+
+  And to generate a salt in django output format:
+
+      Pbkdf2.gen_salt(format: :django)
 
   ## Salt length recommendations
 
@@ -63,12 +85,18 @@ defmodule Pbkdf2 do
   recommendations](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf),
   the minimum salt length should be 16 bytes.
   """
-  # MAYBE change this to accept opts as single argument
-  # but accept integer as argument until next major version
-  def gen_salt(salt_len \\ 16, format \\ :modular) do
+  @spec gen_salt(keyword | integer) :: binary
+  def gen_salt(opts \\ [])
+
+  def gen_salt(salt_len) when is_integer(salt_len) do
+    gen_salt(salt_len: salt_len)
+  end
+
+  def gen_salt(opts) do
+    salt_len = Keyword.get(opts, :salt_len, 16)
     Tools.check_salt_length(salt_len)
 
-    case format do
+    case opts[:format] do
       :django -> Tools.get_random_string(salt_len)
       _ -> :crypto.strong_rand_bytes(salt_len)
     end
@@ -79,14 +107,11 @@ defmodule Pbkdf2 do
 
   ## Options
 
-  In addition to the `:salt_len` option shown below, this function also takes
-  options that are then passed on to the `hash_password` function in the
-  `Pbkdf2.Base` module.
+  In addition to the options for `gen_salt/1` (`:salt_len` and `:format`),
+  this function also takes options that are then passed on to the
+  `hash_password` function in the `Pbkdf2.Base` module.
 
   See the documentation for `Pbkdf2.Base.hash_password/3` for further details.
-
-    * `:salt_len` - the length of the random salt
-      * the default is 16 (the minimum is 8) bytes
 
   ## Examples
 
@@ -101,13 +126,24 @@ defmodule Pbkdf2 do
       ...> Pbkdf2.verify_pass("incorrect", hash)
       false
 
+  The next examples show how to use some of the various available options:
+
+      iex> hash = Pbkdf2.hash_pwd_salt("password", rounds: 100_000)
+      ...> Pbkdf2.verify_pass("password", hash)
+      true
+
+      iex> hash = Pbkdf2.hash_pwd_salt("password", digest: :sha256)
+      ...> Pbkdf2.verify_pass("password", hash)
+      true
+
+      iex> hash = Pbkdf2.hash_pwd_salt("password", digest: :sha256, format: :django)
+      ...> Pbkdf2.verify_pass("password", hash)
+      true
+
   """
   @impl true
   def hash_pwd_salt(password, opts \\ []) do
-    salt_len = Keyword.get(opts, :salt_len, 16)
-    format = Keyword.get(opts, :format, :modular)
-    salt = gen_salt(salt_len, format)
-    Base.hash_password(password, salt, opts)
+    Base.hash_password(password, gen_salt(opts), opts)
   end
 
   @doc """

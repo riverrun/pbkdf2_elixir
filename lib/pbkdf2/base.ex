@@ -8,10 +8,7 @@ defmodule Pbkdf2.Base do
 
   @max_length bsl(1, 32) - 1
 
-  # deprecate this function & remove next major version
-  @doc """
-  Generate a salt for use with Django's version of pbkdf2.
-  """
+  @deprecated "Use Pbkdf2.gen_salt/1 (with `format: :django`) instead"
   def django_salt(len) do
     Tools.get_random_string(len)
   end
@@ -29,13 +26,17 @@ defmodule Pbkdf2.Base do
       * the default is 160_000
       * this can also be set in the config file
     * `:format` - the output format of the hash
-      * the default is modular crypt format
+      * the default is `:modular` - modular crypt format
+      * the other available formats are:
+        * `:django` - the format used in django applications
+        * `:hex` - the hash is encoded in hexadecimal
     * `:digest` - the sha algorithm that pbkdf2 will use
       * the default is sha512
     * `:length` - the length, in bytes, of the hash
       * the default is 64 for sha512 and 32 for sha256
 
   """
+  @spec hash_password(binary, binary, keyword) :: binary
   def hash_password(password, salt, opts \\ []) do
     Tools.check_salt_length(byte_size(salt))
     {rounds, output_fmt, {digest, length}} = get_opts(opts)
@@ -52,11 +53,13 @@ defmodule Pbkdf2.Base do
   @doc """
   Verify a password by comparing it with the stored Pbkdf2 hash.
   """
+  @spec verify_pass(binary, binary, binary, atom, binary, atom) :: boolean
   def verify_pass(password, hash, salt, digest, rounds, output_fmt) do
     {salt, length} =
       case output_fmt do
-        :modular -> {Base64.decode(salt), byte_size(Pbkdf2.Base64.decode(hash))}
-        _ -> {salt, byte_size(Base.decode64!(hash))}
+        :modular -> {Base64.decode(salt), byte_size(Base64.decode(hash))}
+        :django -> {salt, byte_size(Base.decode64!(hash))}
+        :hex -> {salt, byte_size(Base.decode16!(hash, case: :lower))}
       end
 
     password
@@ -118,5 +121,5 @@ defmodule Pbkdf2.Base do
 
   defp verify_format(hash, :modular), do: Base64.encode(hash)
   defp verify_format(hash, :django), do: Base.encode64(hash)
-  defp verify_format(hash, _), do: hash
+  defp verify_format(hash, :hex), do: Base.encode16(hash, case: :lower)
 end

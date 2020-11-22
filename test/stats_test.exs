@@ -2,6 +2,7 @@ defmodule Pbkdf2.StatsTest do
   use ExUnit.Case
 
   import ExUnit.CaptureIO
+
   alias Pbkdf2.Stats
 
   test "print report with default options" do

@@ -17,20 +17,18 @@ defmodule Pbkdf2Test do
     assert wrong_password_false(Pbkdf2, password)
   end
 
-  test "add_hash function" do
-    password = Enum.random(ascii_passwords())
-    assert add_hash_creates_map(Pbkdf2, password)
-  end
-
-  test "check_pass function" do
-    password = Enum.random(ascii_passwords())
-    assert check_pass_returns_user(Pbkdf2, password)
-    assert check_pass_returns_error(Pbkdf2, password)
-    assert check_pass_nil_user(Pbkdf2)
-  end
-
   test "gen_salt length of salt" do
     assert byte_size(Pbkdf2.gen_salt()) == 16
+    assert byte_size(Pbkdf2.gen_salt(salt_len: 32)) == 32
+    assert byte_size(Pbkdf2.gen_salt(salt_len: 64)) == 64
+  end
+
+  test "gen_salt with `format: :django` returns django format salt" do
+    assert byte_size(Pbkdf2.gen_salt(format: :django)) == 16
+    assert String.match?(Pbkdf2.gen_salt(format: :django), ~r/^[A-Za-z0-9+$_=\/]*$/)
+  end
+
+  test "gen_salt run with an integer creates the correct length salt" do
     assert byte_size(Pbkdf2.gen_salt(32)) == 32
     assert byte_size(Pbkdf2.gen_salt(64)) == 64
   end
@@ -71,6 +69,19 @@ defmodule Pbkdf2Test do
     assert Pbkdf2.verify_pass("password", django_hash) == true
   end
 
+  # tests for deprecated functions
+  test "add_hash function" do
+    password = Enum.random(ascii_passwords())
+    assert add_hash_creates_map(Pbkdf2, password)
+  end
+
+  test "check_pass function" do
+    password = Enum.random(ascii_passwords())
+    assert check_pass_returns_user(Pbkdf2, password)
+    assert check_pass_returns_error(Pbkdf2, password)
+    assert check_pass_nil_user(Pbkdf2)
+  end
+
   test "add_hash and check_pass" do
     assert {:ok, user} = Pbkdf2.add_hash("password") |> Pbkdf2.check_pass("password")
     assert {:error, "invalid password"} = Pbkdf2.add_hash("pass") |> Pbkdf2.check_pass("password")
@@ -108,9 +119,5 @@ defmodule Pbkdf2Test do
   test "check_pass with password that is not a string" do
     assert {:error, message} = Pbkdf2.add_hash("pass") |> Pbkdf2.check_pass(nil)
     assert message =~ "password is not a string"
-  end
-
-  # maybe move this to base_test + add comment stating reason for this test
-  test "verify_pass can check hash with old django_salt" do
   end
 end

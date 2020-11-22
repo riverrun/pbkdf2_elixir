@@ -15,20 +15,6 @@ If you want the Pbkdf2 output to be in binary (raw) or hex format, you might
 find [Plug.Crypto.KeyGenerator](https://hexdocs.pm/plug_crypto/Plug.Crypto.KeyGenerator.html)
 more convenient.
 
-## Changes in version 1
-
-In version 1.0, pbkdf2_elixir has been updated to implement the Comeonin
-and Comeonin.PasswordHash behaviours.
-
-It now has the following two additional convenience functions:
-
-* `add_hash/2`
-  * same as Comeonin.Pbkdf2.add_hash in Comeonin version 4
-  * hashes a password and returns a map with the password hash
-* `check_pass/3`
-  * same as Comeonin.Pbkdf2.check_pass in Comeonin version 4
-  * takes a user struct and password as input and verifies the password
-
 ## Installation
 
 1. Add pbkdf2_elixir to the `deps` section of your mix.exs file:
@@ -36,7 +22,7 @@ It now has the following two additional convenience functions:
 ```elixir
 def deps do
   [
-    {:pbkdf2_elixir, "~> 1.0"}
+    {:pbkdf2_elixir, "~> 1.3"}
   ]
 end
 ```

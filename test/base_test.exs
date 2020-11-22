@@ -9,6 +9,9 @@ defmodule Pbkdf2.BaseTest do
     for {password, salt, rounds, stored_hash} <- data do
       opts = [rounds: rounds, digest: digest, format: format]
       assert Base.hash_password(password, salt, opts) == stored_hash
+      [_, _, encoded_salt, hash] = String.split(stored_hash, "$", trim: true)
+      assert Base.verify_pass(password, hash, encoded_salt, digest, to_string(rounds), format)
+      assert Pbkdf2.verify_pass(password, stored_hash)
     end
   end
 
@@ -144,6 +147,20 @@ defmodule Pbkdf2.BaseTest do
     |> check_vectors(:sha256, :django)
   end
 
+  test "create a hash in hex format and verify the password" do
+    password = "password"
+    salt = "saltSALTsaltSALT"
+    hash = Base.hash_password(password, salt, format: :hex)
+    assert Base.verify_pass(password, hash, salt, :sha512, "160000", :hex)
+    refute Base.verify_pass(password, hash, salt, :sha256, "160000", :hex)
+    hash = Base.hash_password(password, salt, digest: :sha256, format: :hex)
+    assert Base.verify_pass(password, hash, salt, :sha256, "160000", :hex)
+    refute Base.verify_pass(password, hash, salt, :sha256, "100000", :hex)
+    hash = Base.hash_password(password, salt, digest: :sha256, format: :hex, length: 64)
+    assert Base.verify_pass(password, hash, salt, :sha256, "160000", :hex)
+    refute Base.verify_pass(password, hash, salt, :sha512, "160000", :hex)
+  end
+
   test "configuring hash_password number of rounds" do
     Application.put_env(:pbkdf2_elixir, :rounds, 1)
     assert String.starts_with?(Base.hash_password("password", "somesalt"), "$pbkdf2-sha512$1$")
@@ -155,11 +172,11 @@ defmodule Pbkdf2.BaseTest do
            )
   end
 
-  test "configuring output format" do
-    salt = Pbkdf2.gen_salt(12)
+  test "configuring digest and output format" do
+    salt = Pbkdf2.gen_salt()
     hash = Base.hash_password("password", salt, digest: :sha256)
     assert hash =~ "$pbkdf2-sha256"
-    salt = Base.django_salt(12)
+    salt = Pbkdf2.gen_salt(format: :django)
     hash = Base.hash_password("password", salt, digest: :sha256, format: :django)
     assert hash =~ "pbkdf2_sha256"
   end

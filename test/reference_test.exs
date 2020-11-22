@@ -3,7 +3,7 @@ defmodule Pbkdf2.ReferenceTest do
 
   alias Pbkdf2.Base
 
-  def read_file(filename, digest) do
+  def read_file_and_run_tests(filename, digest) do
     tests =
       Path.expand("support/#{filename}", __DIR__)
       |> File.read!()
@@ -26,10 +26,10 @@ defmodule Pbkdf2.ReferenceTest do
   end
 
   test "sha256 reference tests" do
-    read_file("pbkdf2_sha256_test_vectors", :sha256)
+    read_file_and_run_tests("pbkdf2_sha256_test_vectors", :sha256)
   end
 
   test "sha512 reference tests" do
-    read_file("pbkdf2_sha512_test_vectors", :sha512)
+    read_file_and_run_tests("pbkdf2_sha512_test_vectors", :sha512)
   end
 end
