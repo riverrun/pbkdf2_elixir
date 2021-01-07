@@ -32,8 +32,8 @@ defmodule Pbkdf2Elixir.Mixfile do
   defp deps do
     [
       {:comeonin, "~> 5.3"},
-      {:ex_doc, "~> 0.20", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.0.0-rc.3", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.23", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.0.0", only: :dev, runtime: false}
     ]
   end
 
