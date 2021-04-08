@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.4.0
+
+* Changes
+  * updated hmac sha function to support the new crypto api in OTP 24
+
 ## v1.3.0
 
 * Bug fixes

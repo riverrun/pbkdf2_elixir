@@ -196,7 +196,7 @@ defmodule Pbkdf2.BaseTest do
   end
 
   test "raises when password or salt is nil to hash_password" do
-    assert_raise ArgumentError, fn ->
+    assert_raise ErlangError, fn ->
       Base.hash_password(nil, "somesalt")
     end
 

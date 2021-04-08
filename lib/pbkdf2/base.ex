@@ -46,7 +46,7 @@ defmodule Pbkdf2.Base do
     end
 
     password
-    |> pbkdf2(salt, digest, rounds, length, 1, [], 0)
+    |> create_hash(salt, digest, rounds, length)
     |> format(salt, digest, rounds, output_fmt)
   end
 
@@ -63,8 +63,8 @@ defmodule Pbkdf2.Base do
       end
 
     password
-    |> pbkdf2(salt, digest, String.to_integer(rounds), length, 1, [], 0)
-    |> verify_format(output_fmt)
+    |> create_hash(salt, digest, String.to_integer(rounds), length)
+    |> encode(output_fmt)
     |> Tools.secure_check(hash)
   end
 
@@ -79,21 +79,26 @@ defmodule Pbkdf2.Base do
     }
   end
 
-  defp pbkdf2(_password, _salt, _digest, _rounds, dklen, _block_index, acc, length)
+  defp create_hash(password, salt, digest, rounds, length) do
+    digest
+    |> hmac_fun(password)
+    |> do_create_hash(salt, rounds, length, 1, [], 0)
+  end
+
+  defp do_create_hash(_fun, _salt, _rounds, dklen, _block_index, acc, length)
        when length >= dklen do
     key = acc |> Enum.reverse() |> IO.iodata_to_binary()
     <<bin::binary-size(dklen), _::binary>> = key
     bin
   end
 
-  defp pbkdf2(password, salt, digest, rounds, dklen, block_index, acc, length) do
-    initial = :crypto.hmac(digest, password, <<salt::binary, block_index::integer-size(32)>>)
-    block = iterate(password, digest, rounds - 1, initial, initial)
+  defp do_create_hash(fun, salt, rounds, dklen, block_index, acc, length) do
+    initial = fun.(<<salt::binary, block_index::integer-size(32)>>)
+    block = iterate(fun, rounds - 1, initial, initial)
 
-    pbkdf2(
-      password,
+    do_create_hash(
+      fun,
       salt,
-      digest,
       rounds,
       dklen,
       block_index + 1,
@@ -102,11 +107,11 @@ defmodule Pbkdf2.Base do
     )
   end
 
-  defp iterate(_password, _digest, 0, _prev, acc), do: acc
+  defp iterate(_fun, 0, _prev, acc), do: acc
 
-  defp iterate(password, digest, round, prev, acc) do
-    next = :crypto.hmac(digest, password, prev)
-    iterate(password, digest, round - 1, next, :crypto.exor(next, acc))
+  defp iterate(fun, round, prev, acc) do
+    next = fun.(prev)
+    iterate(fun, round - 1, next, :crypto.exor(next, acc))
   end
 
   defp format(hash, salt, digest, rounds, :modular) do
@@ -119,7 +124,13 @@ defmodule Pbkdf2.Base do
 
   defp format(hash, _salt, _digest, _rounds, :hex), do: Base.encode16(hash, case: :lower)
 
-  defp verify_format(hash, :modular), do: Base64.encode(hash)
-  defp verify_format(hash, :django), do: Base.encode64(hash)
-  defp verify_format(hash, :hex), do: Base.encode16(hash, case: :lower)
+  defp encode(hash, :modular), do: Base64.encode(hash)
+  defp encode(hash, :django), do: Base.encode64(hash)
+  defp encode(hash, :hex), do: Base.encode16(hash, case: :lower)
+
+  if System.otp_release() >= "22" do
+    defp hmac_fun(digest, key), do: &:crypto.mac(:hmac, digest, key, &1)
+  else
+    defp hmac_fun(digest, key), do: &:crypto.hmac(digest, key, &1)
+  end
 end
