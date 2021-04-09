@@ -196,8 +196,14 @@ defmodule Pbkdf2.BaseTest do
   end
 
   test "raises when password or salt is nil to hash_password" do
-    assert_raise ErlangError, fn ->
-      Base.hash_password(nil, "somesalt")
+    if System.otp_release() >= "22" do
+      assert_raise ErlangError, fn ->
+        Base.hash_password(nil, "somesalt")
+      end
+    else
+      assert_raise ArgumentError, fn ->
+        Base.hash_password(nil, "somesalt")
+      end
     end
 
     assert_raise ArgumentError, fn ->
