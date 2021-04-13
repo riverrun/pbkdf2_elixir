@@ -37,6 +37,7 @@ defmodule Pbkdf2.Stats do
       * the default is "password"
     * `:salt` - the salt used
       * the default is "somesaltSOMESALT"
+
   """
   def report(opts \\ []) do
     password = Keyword.get(opts, :password, "password")
