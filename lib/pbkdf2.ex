@@ -2,23 +2,22 @@ defmodule Pbkdf2 do
   @moduledoc """
   Elixir wrapper for the Pbkdf2 password hashing function.
 
-  For a lower-level API, see Pbkdf2.Base.
+  For a lower-level API, see `Pbkdf2.Base`.
 
   ## Configuration
 
   The following parameter can be set in the config file:
 
-    * rounds - computational cost
+    * `:rounds` - computational cost
       * the number of rounds
-      * 160_000 is the default
+      * `160_000` is the default
 
   If you are hashing passwords in your tests, it can be useful to add
   the following to the `config/test.exs` file:
 
+      # Note: Do not use this value in production
       config :pbkdf2_elixir,
         rounds: 1
-
-  NB. do not use this value in production.
 
   ## Pbkdf2
 
@@ -35,7 +34,7 @@ defmodule Pbkdf2 do
   It is recommended that you set a maximum length for the password
   when using Pbkdf2. This maximum length should not prevent valid users from setting
   long passwords. It is instead needed to combat denial-of-service attacks.
-  As an example, Django sets the maximum length to 4096 bytes.
+  As an example, Django sets the maximum length to `4096` bytes.
   For more information, see [this link](https://www.djangoproject.com/weblog/2013/sep/15/security/).
   """
 
@@ -70,7 +69,7 @@ defmodule Pbkdf2 do
 
       Pbkdf2.gen_salt(salt_len: 32)
 
-  And to generate a salt in django output format:
+  And to generate a salt in Django output format:
 
       Pbkdf2.gen_salt(format: :django)
 

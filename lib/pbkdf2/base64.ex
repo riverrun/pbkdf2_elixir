@@ -1,6 +1,6 @@
 defmodule Pbkdf2.Base64 do
   @moduledoc """
-  Module that provides base64 encoding for pbkdf2.
+  Module that provides base64 encoding for Pbkdf2.
 
   Most developers will not need to use this module directly.
 
@@ -25,6 +25,7 @@ defmodule Pbkdf2.Base64 do
 
       iex> Pbkdf2.Base64.encode("spamandeggs")
       "c3BhbWFuZGVnZ3M"
+
   """
   def encode(<<>>), do: <<>>
 
@@ -52,6 +53,7 @@ defmodule Pbkdf2.Base64 do
 
       iex> Pbkdf2.Base64.decode("c3BhbWFuZGVnZ3M")
       "spamandeggs"
+
   """
   def decode(<<>>), do: <<>>
 
