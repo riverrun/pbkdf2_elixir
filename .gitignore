@@ -22,6 +22,8 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 pbkdf2_elixir-*.tar
 
-
 # Temporary files for e.g. tests
-/tmp
+/tmp/
+
+# Dialyzer plts files
+/priv/

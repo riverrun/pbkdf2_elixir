@@ -2,7 +2,7 @@ defmodule Pbkdf2Elixir.Mixfile do
   use Mix.Project
 
   @source_url "https://github.com/riverrun/pbkdf2_elixir"
-  @version "1.4.0"
+  @version "1.4.1"
 
   def project do
     [
