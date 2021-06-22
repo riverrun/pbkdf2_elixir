@@ -15,6 +15,150 @@ defmodule Pbkdf2.BaseTest do
     end
   end
 
+  test "base pbkdf2_md4 tests" do
+    [
+      {
+        "passDATAb00AB7YxDTT",
+        "saltKEYbcTcXHCBxtjD",
+        100_000,
+        "$pbkdf2-md4$100000$c2FsdEtFWWJjVGNYSENCeHRqRA$BCScq1KoBh1SxktpMbcMDC8xWfj2T3WW7DdJD7i7M2I"
+      },
+      {
+        "passDATAb00AB7YxDTTl",
+        "saltKEYbcTcXHCBxtjD2",
+        100_000,
+        "$pbkdf2-md4$100000$c2FsdEtFWWJjVGNYSENCeHRqRDI$i6.6ohjhMQoZu3pOwvsajT2Owt/9jxPTTUucaTRLt0I"
+      },
+      {
+        "passDATAb00AB7YxDTTlRH2dqxDx19GDxDV1zFMz7E6QVqKIzwOtMnlxQLttpE5",
+        "saltKEYbcTcXHCBxtjD2PnBh44AIQ6XUOCESOhXpEp3HrcGMwbjzQKMSaf63IJe",
+        100_000,
+        "$pbkdf2-md4$100000$c2FsdEtFWWJjVGNYSENCeHRqRDJQbkJoNDRBSVE2WFVPQ0VTT2hYcEVwM0hyY0dNd2JqelFLTVNhZjYzSUpl$t5E8zh7jYJW6H/T9dCizLZcqDnndH4i1ELijCaycSUY"
+      }
+    ]
+    |> check_vectors(:md4)
+  end
+
+  test "base pbkdf2_md5 tests" do
+    [
+      {
+        "passDATAb00AB7YxDTT",
+        "saltKEYbcTcXHCBxtjD",
+        100_000,
+        "$pbkdf2-md5$100000$c2FsdEtFWWJjVGNYSENCeHRqRA$K2rAet/4BO3vXhAixgKM7d54NSKq5PyLq3KiyT5BppY"
+      },
+      {
+        "passDATAb00AB7YxDTTl",
+        "saltKEYbcTcXHCBxtjD2",
+        100_000,
+        "$pbkdf2-md5$100000$c2FsdEtFWWJjVGNYSENCeHRqRDI$gGCF9oSJfaIvpkDJb66NduaLiMxGGnKl.DQngVXTRC0"
+      },
+      {
+        "passDATAb00AB7YxDTTlRH2dqxDx19GDxDV1zFMz7E6QVqKIzwOtMnlxQLttpE5",
+        "saltKEYbcTcXHCBxtjD2PnBh44AIQ6XUOCESOhXpEp3HrcGMwbjzQKMSaf63IJe",
+        100_000,
+        "$pbkdf2-md5$100000$c2FsdEtFWWJjVGNYSENCeHRqRDJQbkJoNDRBSVE2WFVPQ0VTT2hYcEVwM0hyY0dNd2JqelFLTVNhZjYzSUpl$rgvaGebYhpPWwBhXSJaaqXUJLsSZG30YiBwmWPnFPSY"
+      }
+    ]
+    |> check_vectors(:md5)
+  end
+
+  test "base pbkdf2_sha tests" do
+    [
+      {
+        "passDATAb00AB7YxDTT",
+        "saltKEYbcTcXHCBxtjD",
+        100_000,
+        "$pbkdf2-sha$100000$c2FsdEtFWWJjVGNYSENCeHRqRA$tJOhy631DHZdCOVNGIA0MttkywU8gSl5XoAvulUVlqA"
+      },
+      {
+        "passDATAb00AB7YxDTTl",
+        "saltKEYbcTcXHCBxtjD2",
+        100_000,
+        "$pbkdf2-sha$100000$c2FsdEtFWWJjVGNYSENCeHRqRDI$foDXm179EG9KC5aG3N1rYsKcnq0ve0NFIx8LhOaGvD8"
+      },
+      {
+        "passDATAb00AB7YxDTTlRH2dqxDx19GDxDV1zFMz7E6QVqKIzwOtMnlxQLttpE5",
+        "saltKEYbcTcXHCBxtjD2PnBh44AIQ6XUOCESOhXpEp3HrcGMwbjzQKMSaf63IJe",
+        100_000,
+        "$pbkdf2-sha$100000$c2FsdEtFWWJjVGNYSENCeHRqRDJQbkJoNDRBSVE2WFVPQ0VTT2hYcEVwM0hyY0dNd2JqelFLTVNhZjYzSUpl$yBI5QPTwnktUHUmd7l7x7NLglZxZqVeZ00Tphh2/7W8"
+      }
+    ]
+    |> check_vectors(:sha)
+  end
+
+  test "base pbkdf2_sha224 tests" do
+    [
+      {
+        "passDATAb00AB7YxDTT",
+        "saltKEYbcTcXHCBxtjD",
+        100_000,
+        "$pbkdf2-sha224$100000$c2FsdEtFWWJjVGNYSENCeHRqRA$gIzBTgAdt2f1t01eNMRX6Z88RIiD4Xwccvf.13gwJ7E"
+      },
+      {
+        "passDATAb00AB7YxDTTl",
+        "saltKEYbcTcXHCBxtjD2",
+        100_000,
+        "$pbkdf2-sha224$100000$c2FsdEtFWWJjVGNYSENCeHRqRDI$ca3b8uw2r5k2nD6gCXiDtJgfI4YS9eIqHN4rOmeYJbM"
+      },
+      {
+        "passDATAb00AB7YxDTTlRH2dqxDx19GDxDV1zFMz7E6QVqKIzwOtMnlxQLttpE5",
+        "saltKEYbcTcXHCBxtjD2PnBh44AIQ6XUOCESOhXpEp3HrcGMwbjzQKMSaf63IJe",
+        100_000,
+        "$pbkdf2-sha224$100000$c2FsdEtFWWJjVGNYSENCeHRqRDJQbkJoNDRBSVE2WFVPQ0VTT2hYcEVwM0hyY0dNd2JqelFLTVNhZjYzSUpl$PUexjY9O2JA504B/8/bU2eFcFYqKRYj8i5dqDVJ5VBk"
+      }
+    ]
+    |> check_vectors(:sha224)
+  end
+
+  test "base pbkdf2_sha256 tests" do
+    [
+      {
+        "passDATAb00AB7YxDTT",
+        "saltKEYbcTcXHCBxtjD",
+        100_000,
+        "$pbkdf2-sha256$100000$c2FsdEtFWWJjVGNYSENCeHRqRA$rIq6SFKrPmE2K/.VNRiY5K0mPzqnwYtTOB7BPitbZ5U"
+      },
+      {
+        "passDATAb00AB7YxDTTl",
+        "saltKEYbcTcXHCBxtjD2",
+        100_000,
+        "$pbkdf2-sha256$100000$c2FsdEtFWWJjVGNYSENCeHRqRDI$FKa6HSFOmTo5B.5U0up17LY6o8aL2o/bDKM..y./OT0"
+      },
+      {
+        "passDATAb00AB7YxDTTlRH2dqxDx19GDxDV1zFMz7E6QVqKIzwOtMnlxQLttpE5",
+        "saltKEYbcTcXHCBxtjD2PnBh44AIQ6XUOCESOhXpEp3HrcGMwbjzQKMSaf63IJe",
+        100_000,
+        "$pbkdf2-sha256$100000$c2FsdEtFWWJjVGNYSENCeHRqRDJQbkJoNDRBSVE2WFVPQ0VTT2hYcEVwM0hyY0dNd2JqelFLTVNhZjYzSUpl$3hZq8FgVonszF2YucuzBObJikR.HkMzmK10Q2c9L49w"
+      }
+    ]
+    |> check_vectors(:sha256)
+  end
+
+  test "base pbkdf2_sha384 tests" do
+    [
+      {
+        "passDATAb00AB7YxDTT",
+        "saltKEYbcTcXHCBxtjD",
+        100_000,
+        "$pbkdf2-sha384$100000$c2FsdEtFWWJjVGNYSENCeHRqRA$05AhNZYUxfNCmBD6J6Fdp1HO9Z1931bMmOhAbmkdhHk"
+      },
+      {
+        "passDATAb00AB7YxDTTl",
+        "saltKEYbcTcXHCBxtjD2",
+        100_000,
+        "$pbkdf2-sha384$100000$c2FsdEtFWWJjVGNYSENCeHRqRDI$HuZ1yYbHaZ7.QCRrJw2fMOgWe.ZZSZHhXRdOWXCCKmg"
+      },
+      {
+        "passDATAb00AB7YxDTTlRH2dqxDx19GDxDV1zFMz7E6QVqKIzwOtMnlxQLttpE5",
+        "saltKEYbcTcXHCBxtjD2PnBh44AIQ6XUOCESOhXpEp3HrcGMwbjzQKMSaf63IJe",
+        100_000,
+        "$pbkdf2-sha384$100000$c2FsdEtFWWJjVGNYSENCeHRqRDJQbkJoNDRBSVE2WFVPQ0VTT2hYcEVwM0hyY0dNd2JqelFLTVNhZjYzSUpl$BjurYEAL7vTNkAkiq0iw5GL9O0cNZnGyCYDxLOzDFgQ"
+      }
+    ]
+    |> check_vectors(:sha384)
+  end
+
   test "base pbkdf2_sha512 tests" do
     [
       {
@@ -37,6 +181,102 @@ defmodule Pbkdf2.BaseTest do
       }
     ]
     |> check_vectors
+  end
+
+  test "base pbkdf2_sha3_224 tests" do
+    [
+      {
+        "passDATAb00AB7YxDTT",
+        "saltKEYbcTcXHCBxtjD",
+        100_000,
+        "$pbkdf2-sha3_224$100000$c2FsdEtFWWJjVGNYSENCeHRqRA$ME2MHQNmBvIgX.Ch.nqdyi/InlXM2lmpnrHSUNjowzA"
+      },
+      {
+        "passDATAb00AB7YxDTTl",
+        "saltKEYbcTcXHCBxtjD2",
+        100_000,
+        "$pbkdf2-sha3_224$100000$c2FsdEtFWWJjVGNYSENCeHRqRDI$8WtHbsGqW6nOrPmXwGA80Kfn3d7uTkB/HnvbcRm7rWk"
+      },
+      {
+        "passDATAb00AB7YxDTTlRH2dqxDx19GDxDV1zFMz7E6QVqKIzwOtMnlxQLttpE5",
+        "saltKEYbcTcXHCBxtjD2PnBh44AIQ6XUOCESOhXpEp3HrcGMwbjzQKMSaf63IJe",
+        100_000,
+        "$pbkdf2-sha3_224$100000$c2FsdEtFWWJjVGNYSENCeHRqRDJQbkJoNDRBSVE2WFVPQ0VTT2hYcEVwM0hyY0dNd2JqelFLTVNhZjYzSUpl$ZspKPqKU0BWicwi9LVDYpmbhMlFk0wUCtSBdGc.NTYk"
+      }
+    ]
+    |> check_vectors(:sha3_224)
+  end
+
+  test "base pbkdf2_sha3_256 tests" do
+    [
+      {
+        "passDATAb00AB7YxDTT",
+        "saltKEYbcTcXHCBxtjD",
+        100_000,
+        "$pbkdf2-sha3_256$100000$c2FsdEtFWWJjVGNYSENCeHRqRA$gZqwb0K81l6kyiu3oGFA5O8VOCdi3TH0ePxy2Mq3yfc"
+      },
+      {
+        "passDATAb00AB7YxDTTl",
+        "saltKEYbcTcXHCBxtjD2",
+        100_000,
+        "$pbkdf2-sha3_256$100000$c2FsdEtFWWJjVGNYSENCeHRqRDI$aD2gRbMudPxF9zvvYTGyubznqOvF7QDDN0w5cevBUlE"
+      },
+      {
+        "passDATAb00AB7YxDTTlRH2dqxDx19GDxDV1zFMz7E6QVqKIzwOtMnlxQLttpE5",
+        "saltKEYbcTcXHCBxtjD2PnBh44AIQ6XUOCESOhXpEp3HrcGMwbjzQKMSaf63IJe",
+        100_000,
+        "$pbkdf2-sha3_256$100000$c2FsdEtFWWJjVGNYSENCeHRqRDJQbkJoNDRBSVE2WFVPQ0VTT2hYcEVwM0hyY0dNd2JqelFLTVNhZjYzSUpl$ErWVAo/ZhFuJaK5uEUzC2wU0NmcJCsW.yWWFFNOL.VI"
+      }
+    ]
+    |> check_vectors(:sha3_256)
+  end
+
+  test "base pbkdf2_sha3_384 tests" do
+    [
+      {
+        "passDATAb00AB7YxDTT",
+        "saltKEYbcTcXHCBxtjD",
+        100_000,
+        "$pbkdf2-sha3_384$100000$c2FsdEtFWWJjVGNYSENCeHRqRA$meyC2HvX2dXYXZZbnCEW0xwXfGkAw1nuyHBXYAyOl6M"
+      },
+      {
+        "passDATAb00AB7YxDTTl",
+        "saltKEYbcTcXHCBxtjD2",
+        100_000,
+        "$pbkdf2-sha3_384$100000$c2FsdEtFWWJjVGNYSENCeHRqRDI$deki2196K3.RbZaXCjexjNirY6OSBiNWjk1rOctkB84"
+      },
+      {
+        "passDATAb00AB7YxDTTlRH2dqxDx19GDxDV1zFMz7E6QVqKIzwOtMnlxQLttpE5",
+        "saltKEYbcTcXHCBxtjD2PnBh44AIQ6XUOCESOhXpEp3HrcGMwbjzQKMSaf63IJe",
+        100_000,
+        "$pbkdf2-sha3_384$100000$c2FsdEtFWWJjVGNYSENCeHRqRDJQbkJoNDRBSVE2WFVPQ0VTT2hYcEVwM0hyY0dNd2JqelFLTVNhZjYzSUpl$PyYUeHcVFoIQKnXNMe0rx0dRGgoyWUt8PWK/jjTgyRc"
+      }
+    ]
+    |> check_vectors(:sha3_384)
+  end
+
+  test "base pbkdf2_sha3_512 tests" do
+    [
+      {
+        "passDATAb00AB7YxDTT",
+        "saltKEYbcTcXHCBxtjD",
+        100_000,
+        "$pbkdf2-sha3_512$100000$c2FsdEtFWWJjVGNYSENCeHRqRA$/u/I0hidzBedlxovMBogaieD/c/.wC49WJX/3AwkdRLcy8ZSK9EbFnw4X6mhy1cSPGUppCyZsV.1tD3jkFk9yA"
+      },
+      {
+        "passDATAb00AB7YxDTTl",
+        "saltKEYbcTcXHCBxtjD2",
+        100_000,
+        "$pbkdf2-sha3_512$100000$c2FsdEtFWWJjVGNYSENCeHRqRDI$LMnh8/zlHKPJR7BaOWq9l3B7JfIG17U7DNUWlOyImYZXfBit8lIBgM3ANCJ.LX47GAfh26yKxAcuxU2omJKk5g"
+      },
+      {
+        "passDATAb00AB7YxDTTlRH2dqxDx19GDxDV1zFMz7E6QVqKIzwOtMnlxQLttpE5",
+        "saltKEYbcTcXHCBxtjD2PnBh44AIQ6XUOCESOhXpEp3HrcGMwbjzQKMSaf63IJe",
+        100_000,
+        "$pbkdf2-sha3_512$100000$c2FsdEtFWWJjVGNYSENCeHRqRDJQbkJoNDRBSVE2WFVPQ0VTT2hYcEVwM0hyY0dNd2JqelFLTVNhZjYzSUpl$LIHisBpRderrmSG3zGCqaTFK0FSy4zPTKd7EGzN6VD7QvyKdRUFllgDCnBJPv3zcDo1uSzo2xhZSM5JcaOKCeg"
+      }
+    ]
+    |> check_vectors(:sha3_512)
   end
 
   test "Python passlib pbkdf2_sha512 tests" do
