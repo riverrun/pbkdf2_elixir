@@ -73,7 +73,16 @@ defmodule Pbkdf2.Base do
       Keyword.get(opts, :rounds, Application.get_env(:pbkdf2_elixir, :rounds, 160_000)),
       Keyword.get(opts, :format, :modular),
       case opts[:digest] do
+        :md4 -> {:md4, opts[:length] || 32}
+        :md5 -> {:md5, opts[:length] || 32}
+        :sha -> {:sha, opts[:length] || 32}
+        :sha224 -> {:sha224, opts[:length] || 32}
         :sha256 -> {:sha256, opts[:length] || 32}
+        :sha384 -> {:sha384, opts[:length] || 32}
+        :sha3_224 -> {:sha3_224, opts[:length] || 32}
+        :sha3_256 -> {:sha3_256, opts[:length] || 32}
+        :sha3_384 -> {:sha3_384, opts[:length] || 32}
+        :sha3_512 -> {:sha3_512, opts[:length] || 64}
         _ -> {:sha512, opts[:length] || 64}
       end
     }

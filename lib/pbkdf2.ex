@@ -153,10 +153,19 @@ defmodule Pbkdf2 do
   """
   @impl true
   def verify_pass(password, stored_hash) do
-    [alg, rounds, salt, hash] = String.split(stored_hash, "$", trim: true)
-    digest = if alg =~ "sha512", do: :sha512, else: :sha256
+    [prefix, rounds, salt, hash] = String.split(stored_hash, "$", trim: true)
+    digest = hash_prefix_to_digest(prefix)
+
     Base.verify_pass(password, hash, salt, digest, rounds, output(stored_hash))
   end
+
+  defp hash_prefix_to_digest("pbkdf2" <> _ = prefix) do
+    prefix
+    |> String.slice(7..-1)
+    |> String.to_existing_atom()
+  end
+
+  defp hash_prefix_to_digest(digest), do: String.to_existing_atom(digest)
 
   defp output("$pbkdf2" <> _), do: :modular
   defp output("pbkdf2" <> _), do: :django
