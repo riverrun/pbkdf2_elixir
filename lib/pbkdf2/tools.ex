@@ -42,7 +42,7 @@ defmodule Pbkdf2.Tools do
   end
 
   defp secure_check(<<h, rest_h::binary>>, <<s, rest_s::binary>>, acc) do
-    secure_check(rest_h, rest_s, acc ||| h ^^^ s)
+    secure_check(rest_h, rest_s, acc ||| bxor(h, s))
   end
 
   defp secure_check("", "", acc) do
