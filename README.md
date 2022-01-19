@@ -58,13 +58,6 @@ There are many ways you can contribute to the development of this library, inclu
 * Reporting issues
 * Improving documentation
 * Sharing your experiences with others
-* [Making a financial contribution](#donations)
-
-## Donations
-
-First of all, I would like to emphasize that this software is offered
-free of charge. However, if you find it useful, and you would like to
-buy me a cup of coffee, you can do so at [paypal](https://www.paypal.me/alovedalongthe).
 
 ## Copyright and License
 
