@@ -40,75 +40,16 @@ defmodule Pbkdf2 do
 
   use Comeonin
 
-  alias Pbkdf2.{Base, Tools}
-
-  @doc """
-  Generates a random salt.
-
-  This function takes one optional argument - a keyword list (see below
-  for options) or an integer with the salt length (in bytes).
-
-  ## Options
-
-  The following options are available:
-
-    * `:salt_len` - the length of the random salt
-      * the default is 16 bytes
-      * for more information, see the 'Salt length recommendations' section below
-    * `:format` - the length of the random salt
-      * the default is `:modular` (modular crypt format)
-      * the other available options are `:django` and `:hex`
-
-  ## Examples
-
-  Here is an example of generating a salt with the default salt length and format:
-
-      Pbkdf2.gen_salt()
-
-  To generate a different length salt:
-
-      Pbkdf2.gen_salt(salt_len: 32)
-
-  And to generate a salt in Django output format:
-
-      Pbkdf2.gen_salt(format: :django)
-
-  ## Salt length recommendations
-
-  In most cases, 16 bytes is a suitable length for the salt.
-  It is not recommended to use a salt that is shorter than this
-  (see below for details and references).
-
-  According to the [Pbkdf2 standard](https://tools.ietf.org/html/rfc8018),
-  the salt should be at least 8 bytes long, but according to [NIST
-  recommendations](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf),
-  the minimum salt length should be 16 bytes.
-  """
-  @spec gen_salt(keyword | integer) :: binary
-  def gen_salt(opts \\ [])
-
-  def gen_salt(salt_len) when is_integer(salt_len) do
-    gen_salt(salt_len: salt_len)
-  end
-
-  def gen_salt(opts) do
-    salt_len = Keyword.get(opts, :salt_len, 16)
-    Tools.check_salt_length(salt_len)
-
-    case opts[:format] do
-      :django -> Tools.get_random_string(salt_len)
-      _ -> :crypto.strong_rand_bytes(salt_len)
-    end
-  end
+  alias Pbkdf2.Base
 
   @doc """
   Hashes a password with a randomly generated salt.
 
   ## Options
 
-  In addition to the options for `gen_salt/1` (`:salt_len` and `:format`),
-  this function also takes options that are then passed on to the
-  `hash_password` function in the `Pbkdf2.Base` module.
+  In addition to the options for `Pbkdf2.Base.gen_salt/1` (`:salt_len` and
+  `:format`), this function also takes options that are then passed on to
+  the `hash_password` function in the `Pbkdf2.Base` module.
 
   See the documentation for `Pbkdf2.Base.hash_password/3` for further details.
 
@@ -142,7 +83,7 @@ defmodule Pbkdf2 do
   """
   @impl true
   def hash_pwd_salt(password, opts \\ []) do
-    Base.hash_password(password, gen_salt(opts), opts)
+    Base.hash_password(password, Base.gen_salt(opts), opts)
   end
 
   @doc """

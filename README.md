@@ -27,7 +27,7 @@ more convenient.
     ```elixir
     def deps do
       [
-        {:pbkdf2_elixir, "~> 1.4"}
+        {:pbkdf2_elixir, "~> 2.0"}
       ]
     end
     ```

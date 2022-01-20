@@ -15,6 +15,33 @@ defmodule Pbkdf2.BaseTest do
     end
   end
 
+  test "gen_salt length of salt" do
+    assert byte_size(Base.gen_salt()) == 16
+    assert byte_size(Base.gen_salt(salt_len: 32)) == 32
+    assert byte_size(Base.gen_salt(salt_len: 64)) == 64
+  end
+
+  test "gen_salt with `format: :django` returns django format salt" do
+    assert byte_size(Base.gen_salt(format: :django)) == 16
+    assert String.match?(Base.gen_salt(format: :django), ~r/^[A-Za-z0-9+$_=\/]*$/)
+  end
+
+  test "gen_salt run with an integer creates the correct length salt" do
+    assert byte_size(Base.gen_salt(32)) == 32
+    assert byte_size(Base.gen_salt(64)) == 64
+  end
+
+  test "gen_salt prints warnings for salts that are too short" do
+    assert capture_io(:stderr, fn -> Base.gen_salt(7) end) =~
+             "salt less than 8 bytes long is not recommended"
+  end
+
+  test "gen_salt raises if salt is too long" do
+    assert_raise ArgumentError, fn ->
+      Base.gen_salt(1025)
+    end
+  end
+
   test "base pbkdf2_sha512 tests" do
     [
       {
@@ -173,10 +200,10 @@ defmodule Pbkdf2.BaseTest do
   end
 
   test "configuring digest and output format" do
-    salt = Pbkdf2.gen_salt()
+    salt = Base.gen_salt()
     hash = Base.hash_password("password", salt, digest: :sha256)
     assert hash =~ "$pbkdf2-sha256"
-    salt = Pbkdf2.gen_salt(format: :django)
+    salt = Base.gen_salt(format: :django)
     hash = Base.hash_password("password", salt, digest: :sha256, format: :django)
     assert hash =~ "pbkdf2_sha256"
   end
