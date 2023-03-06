@@ -3,7 +3,8 @@ defmodule Pbkdf2.Base do
   Base module for the Pbkdf2 password hashing library.
   """
 
-  use Bitwise
+  import Bitwise
+
   alias Pbkdf2.{Base64, Tools}
 
   @max_length bsl(1, 32) - 1
