@@ -11,7 +11,7 @@ defmodule Pbkdf2.Base64 do
   import Bitwise
 
   b64_alphabet =
-    Enum.with_index('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789./')
+    Enum.with_index(~c"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789./")
 
   for {encoding, value} <- b64_alphabet do
     defp unquote(:enc64)(unquote(value)), do: unquote(encoding)
