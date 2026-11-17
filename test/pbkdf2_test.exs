@@ -2,20 +2,6 @@ defmodule Pbkdf2Test do
   use ExUnit.Case
   doctest Pbkdf2
 
-  import Comeonin.BehaviourTestHelper
-
-  test "implementation of Comeonin.PasswordHash behaviour" do
-    password = Enum.random(ascii_passwords())
-    assert correct_password_true(Pbkdf2, password)
-    assert wrong_password_false(Pbkdf2, password)
-  end
-
-  test "Comeonin.PasswordHash behaviour with non-ascii characters" do
-    password = Enum.random(non_ascii_passwords())
-    assert correct_password_true(Pbkdf2, password)
-    assert wrong_password_false(Pbkdf2, password)
-  end
-
   test "hash_pwd_salt only contains alphanumeric characters" do
     assert String.match?(Pbkdf2.hash_pwd_salt("password"), ~r/^[A-Za-z0-9.$\/\-]*$/)
 

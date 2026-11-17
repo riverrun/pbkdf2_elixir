@@ -2,7 +2,7 @@ defmodule Pbkdf2Elixir.Mixfile do
   use Mix.Project
 
   @source_url "https://github.com/riverrun/pbkdf2_elixir"
-  @version "2.3.1"
+  @version "3.0.0"
 
   def project do
     [
@@ -27,7 +27,6 @@ defmodule Pbkdf2Elixir.Mixfile do
 
   defp deps do
     [
-      {:comeonin, "~> 5.3"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:dialyxir, "~> 1.3", only: :dev, runtime: false}
     ]

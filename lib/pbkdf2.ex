@@ -29,16 +29,13 @@ defmodule Pbkdf2 do
   The original implementation used SHA-1 as the pseudorandom function,
   but this version uses HMAC-SHA-512, the default, or HMAC-SHA-256.
 
-  ## Warning
-
-  It is recommended that you set a maximum length for the password
-  when using Pbkdf2. This maximum length should not prevent valid users from setting
-  long passwords. It is instead needed to combat denial-of-service attacks.
-  As an example, Django sets the maximum length to `4096` bytes.
-  For more information, see [this link](https://www.djangoproject.com/weblog/2013/sep/15/security/).
+  > ## Warning {: .warning}
+  > It is recommended that you set a maximum length for the password
+  > when using Pbkdf2. This maximum length should not prevent valid users from setting
+  > long passwords. It is instead needed to combat denial-of-service attacks.
+  > As an example, Django sets the maximum length to `4096` bytes.
+  > For more information, see [this link](https://www.djangoproject.com/weblog/2013/sep/15/security/).
   """
-
-  use Comeonin
 
   alias Pbkdf2.Base
 
@@ -81,7 +78,6 @@ defmodule Pbkdf2 do
       true
 
   """
-  @impl true
   def hash_pwd_salt(password, opts \\ []) do
     Base.hash_password(password, Base.gen_salt(opts), opts)
   end
@@ -92,11 +88,31 @@ defmodule Pbkdf2 do
 
   See the documentation for `hash_pwd_salt/2` for examples of using this function.
   """
-  @impl true
   def verify_pass(password, stored_hash) do
     [alg, rounds, salt, hash] = String.split(stored_hash, "$", trim: true)
     digest = if alg =~ "sha512", do: :sha512, else: :sha256
     Base.verify_pass(password, hash, salt, digest, rounds, output(stored_hash))
+  end
+
+  @doc """
+  Runs the password hash function, but always returns false.
+
+  This function is intended to make it more difficult for any potential
+  attacker to find valid usernames by using timing attacks. This function
+  is only useful if it is used as part of a policy of hiding usernames.
+
+  > #### Note {: .note}
+  > This function is resource-intensive. For a lighter alternative, consider 
+  > adding a sleep delay to mimic the execution time of the hash function.
+
+  ## Options
+
+  This function should be called with the same options as those used by
+  `hash_pwd_salt/2`.
+  """
+  def no_user_verify(opts \\ []) do
+    hash_pwd_salt("", opts)
+    false
   end
 
   defp output("$pbkdf2" <> _), do: :modular
