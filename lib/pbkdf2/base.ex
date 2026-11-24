@@ -143,8 +143,7 @@ defmodule Pbkdf2.Base do
   defp do_create_hash(_fun, _salt, _rounds, dklen, _block_index, acc, length)
        when length >= dklen do
     key = acc |> Enum.reverse() |> IO.iodata_to_binary()
-    <<bin::binary-size(dklen), _::binary>> = key
-    bin
+    binary_part(key, 0, dklen)
   end
 
   defp do_create_hash(fun, salt, rounds, dklen, block_index, acc, length) do
