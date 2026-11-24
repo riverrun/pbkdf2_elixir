@@ -31,7 +31,8 @@ defmodule Pbkdf2.Base64 do
 
   def encode(data) do
     split = 3 * div(byte_size(data), 3)
-    <<main::size(split)-binary, rest::binary>> = data
+    main = binary_part(data, 0, split)
+    rest = binary_part(data, split, byte_size(data) - split)
     main = for <<c::6 <- main>>, into: <<>>, do: <<enc64(c)::8>>
 
     case rest do
@@ -59,7 +60,8 @@ defmodule Pbkdf2.Base64 do
 
   def decode(data) do
     split = 4 * div(byte_size(data), 4)
-    <<main::size(split)-binary, rest::binary>> = data
+    main = binary_part(data, 0, split)
+    rest = binary_part(data, split, byte_size(data) - split)
     main = for <<c::8 <- main>>, into: <<>>, do: <<dec64(c)::6>>
 
     case rest do
